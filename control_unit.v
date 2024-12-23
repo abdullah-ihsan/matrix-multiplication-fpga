@@ -8,16 +8,17 @@ module control_unit (
     output reg tx_start,   // Start UART TX
     output reg mult_start  // Start multiplication
 );
-    // FSM states
-    typedef enum logic [2:0] {
-        IDLE,
-        RECEIVE_DATA,
-        COMPUTE,
-        SEND_RESULT
-    } state_t;
-    state_t current_state, next_state;
+    // State Encoding
+    parameter IDLE         = 3'b000;
+    parameter RECEIVE_DATA = 3'b001;
+    parameter COMPUTE      = 3'b010;
+    parameter SEND_RESULT  = 3'b011;
 
-    // FSM transitions
+    // State Variables
+    reg [2:0] current_state;
+    reg [2:0] next_state;
+
+    // State Transition Logic
     always @(posedge clk or posedge rst) begin
         if (rst) begin
             current_state <= IDLE;
@@ -26,18 +27,18 @@ module control_unit (
         end
     end
 
-    // FSM next state logic
+    // Next State Logic
     always @(*) begin
         case (current_state)
-            IDLE: next_state = rx_valid ? RECEIVE_DATA : IDLE;
+            IDLE:         next_state = rx_valid ? RECEIVE_DATA : IDLE;
             RECEIVE_DATA: next_state = COMPUTE;
-            COMPUTE: next_state = mult_done ? SEND_RESULT : COMPUTE;
-            SEND_RESULT: next_state = tx_busy ? SEND_RESULT : IDLE;
-            default: next_state = IDLE;
+            COMPUTE:      next_state = mult_done ? SEND_RESULT : COMPUTE;
+            SEND_RESULT:  next_state = tx_busy ? SEND_RESULT : IDLE;
+            default:      next_state = IDLE;
         endcase
     end
 
-    // Output control signals
+    // Output Logic
     always @(*) begin
         rx_enable = (current_state == RECEIVE_DATA);
         mult_start = (current_state == COMPUTE);
