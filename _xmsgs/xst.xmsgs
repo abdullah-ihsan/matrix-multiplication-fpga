@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- IMPORTANT: This is an internal file that has been generated
+     by the Xilinx ISE software.  Any direct editing or
+     changes made to this file may result in unpredictable
+     behavior or data corruption.  It is strongly advised that
+     users do not edit the contents of this file. -->
+<messages>
+<msg type="warning" file="HDLCompiler" num="1127" delta="new" >"D:\DSDProjectAAA\project\rx.v" Line 19: Assignment to <arg fmt="%s" index="1">tick_count</arg> ignored, since the identifier is never used
+</msg>
+
+<msg type="warning" file="HDLCompiler" num="1127" delta="new" >"D:\DSDProjectAAA\project\tx.v" Line 20: Assignment to <arg fmt="%s" index="1">tick_count</arg> ignored, since the identifier is never used
+</msg>
+
+<msg type="warning" file="HDLCompiler" num="189" delta="new" >"D:\DSDProjectAAA\project\top.v" Line 34: Size mismatch in connection of port &lt;<arg fmt="%s" index="3">addr</arg>&gt;. Formal port size is <arg fmt="%d" index="2">4</arg>-bit while actual signal size is <arg fmt="%d" index="1">1</arg>-bit.
+</msg>
+
+<msg type="warning" file="HDLCompiler" num="189" delta="new" >"D:\DSDProjectAAA\project\top.v" Line 35: Size mismatch in connection of port &lt;<arg fmt="%s" index="3">write_data</arg>&gt;. Formal port size is <arg fmt="%d" index="2">32</arg>-bit while actual signal size is <arg fmt="%d" index="1">8</arg>-bit.
+</msg>
+
+<msg type="warning" file="HDLCompiler" num="189" delta="new" >"D:\DSDProjectAAA\project\top.v" Line 37: Size mismatch in connection of port &lt;<arg fmt="%s" index="3">read_data</arg>&gt;. Formal port size is <arg fmt="%d" index="2">32</arg>-bit while actual signal size is <arg fmt="%d" index="1">1</arg>-bit.
+</msg>
+
+<msg type="warning" file="HDLCompiler" num="189" delta="new" >"D:\DSDProjectAAA\project\top.v" Line 42: Size mismatch in connection of port &lt;<arg fmt="%s" index="3">addr</arg>&gt;. Formal port size is <arg fmt="%d" index="2">4</arg>-bit while actual signal size is <arg fmt="%d" index="1">1</arg>-bit.
+</msg>
+
+<msg type="warning" file="HDLCompiler" num="189" delta="new" >"D:\DSDProjectAAA\project\top.v" Line 43: Size mismatch in connection of port &lt;<arg fmt="%s" index="3">write_data</arg>&gt;. Formal port size is <arg fmt="%d" index="2">32</arg>-bit while actual signal size is <arg fmt="%d" index="1">8</arg>-bit.
+</msg>
+
+<msg type="warning" file="HDLCompiler" num="189" delta="new" >"D:\DSDProjectAAA\project\top.v" Line 45: Size mismatch in connection of port &lt;<arg fmt="%s" index="3">read_data</arg>&gt;. Formal port size is <arg fmt="%d" index="2">32</arg>-bit while actual signal size is <arg fmt="%d" index="1">1</arg>-bit.
+</msg>
+
+<msg type="warning" file="HDLCompiler" num="91" delta="new" >"D:\DSDProjectAAA\project\matrix_multiplier.v" Line 23: Signal &lt;<arg fmt="%s" index="1">product</arg>&gt; missing in the sensitivity list is added for synthesis purposes. HDL and post-synthesis simulations may differ as a result.
+</msg>
+
+<msg type="error" file="HDLCompiler" num="1128" delta="new" >"D:\DSDProjectAAA\project\matrix_multiplier.v" Line 23: Assignment under multiple single edges is not supported for synthesis
+</msg>
+
+<msg type="warning" file="HDLCompiler" num="1499" delta="new" >"D:\DSDProjectAAA\project\matrix_multiplier.v" Line 1: Empty module &lt;<arg fmt="%s" index="1">matrix_multiplier</arg>&gt; remains a black box.
+</msg>
+
+<msg type="warning" file="HDLCompiler" num="189" delta="new" >"D:\DSDProjectAAA\project\top.v" Line 51: Size mismatch in connection of port &lt;<arg fmt="%s" index="3">a_data</arg>&gt;. Formal port size is <arg fmt="%d" index="2">32</arg>-bit while actual signal size is <arg fmt="%d" index="1">1</arg>-bit.
+</msg>
+
+<msg type="warning" file="HDLCompiler" num="189" delta="new" >"D:\DSDProjectAAA\project\top.v" Line 52: Size mismatch in connection of port &lt;<arg fmt="%s" index="3">b_data</arg>&gt;. Formal port size is <arg fmt="%d" index="2">32</arg>-bit while actual signal size is <arg fmt="%d" index="1">1</arg>-bit.
+</msg>
+
+<msg type="warning" file="HDLCompiler" num="189" delta="new" >"D:\DSDProjectAAA\project\top.v" Line 54: Size mismatch in connection of port &lt;<arg fmt="%s" index="3">result</arg>&gt;. Formal port size is <arg fmt="%d" index="2">32</arg>-bit while actual signal size is <arg fmt="%d" index="1">1</arg>-bit.
+</msg>
+
+<msg type="warning" file="HDLCompiler" num="1127" delta="new" >"D:\DSDProjectAAA\project\top.v" Line 54: Assignment to <arg fmt="%s" index="1">mult_result</arg> ignored, since the identifier is never used
+</msg>
+
+<msg type="warning" file="HDLCompiler" num="1127" delta="new" >"D:\DSDProjectAAA\project\top.v" Line 64: Assignment to <arg fmt="%s" index="1">rx_enable</arg> ignored, since the identifier is never used
+</msg>
+
+<msg type="warning" file="HDLCompiler" num="634" delta="new" >"D:\DSDProjectAAA\project\top.v" Line 10: Net &lt;<arg fmt="%s" index="1">tx_data[7]</arg>&gt; does not have a driver.
+</msg>
+
+<msg type="warning" file="HDLCompiler" num="634" delta="new" >"D:\DSDProjectAAA\project\top.v" Line 34: Net &lt;<arg fmt="%s" index="1">a_addr</arg>&gt; does not have a driver.
+</msg>
+
+<msg type="warning" file="HDLCompiler" num="634" delta="new" >"D:\DSDProjectAAA\project\top.v" Line 42: Net &lt;<arg fmt="%s" index="1">b_addr</arg>&gt; does not have a driver.
+</msg>
+
+</messages>
+

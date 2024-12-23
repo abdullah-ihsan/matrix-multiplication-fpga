@@ -1,0 +1,6 @@
+verilog work "tx.v"
+verilog work "rx.v"
+verilog work "matrix_multiplier.v"
+verilog work "matrix_memory.v"
+verilog work "control_unit.v"
+verilog work "top.v"
