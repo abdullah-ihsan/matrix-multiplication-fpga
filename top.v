@@ -1,11 +1,68 @@
 module top (
-    input wire clk,  // System clock
-    input wire rst,  // Reset
-    input wire rx,   // UART RX
-    output wire tx   // UART TX
+    input  wire clk,  // System clock
+    input  wire rst,  // Reset signal
+    input  wire rx,   // UART RX
+    output wire tx    // UART TX
 );
-    // Instantiate UART RX/TX modules
-    // Instantiate memory modules for matrices A, B, and C
-    // Instantiate matrix multiplication module
-    // Instantiate FSM for control
+    // Internal connections
+    wire [7:0] rx_data;
+    wire rx_valid;
+    wire [7:0] tx_data;
+    wire tx_busy;
+    wire mult_done;
+
+    // Instantiate modules
+    uart_rx uart_rx_inst (
+        .clk(clk),
+        .rst(rst),
+        .rx(rx),
+        .data(rx_data),
+        .valid(rx_valid)
+    );
+
+    uart_tx uart_tx_inst (
+        .clk(clk),
+        .rst(rst),
+        .data(tx_data),
+        .start(tx_start),
+        .tx(tx),
+        .busy(tx_busy)
+    );
+
+    matrix_memory matrix_mem_a (
+        .clk(clk),
+        .addr(a_addr),
+        .write_data(rx_data),
+        .write_enable(rx_valid),
+        .read_data(a_data)
+    );
+
+    matrix_memory matrix_mem_b (
+        .clk(clk),
+        .addr(b_addr),
+        .write_data(rx_data),
+        .write_enable(rx_valid),
+        .read_data(b_data)
+    );
+
+    matrix_multiplier matrix_mult_inst (
+        .clk(clk),
+        .rst(rst),
+        .a_data(a_data),
+        .b_data(b_data),
+        .start(mult_start),
+        .result(mult_result),
+        .done(mult_done)
+    );
+
+    control_unit control_inst (
+        .clk(clk),
+        .rst(rst),
+        .rx_valid(rx_valid),
+        .tx_busy(tx_busy),
+        .mult_done(mult_done),
+        .rx_enable(rx_enable),
+        .tx_start(tx_start),
+        .mult_start(mult_start)
+    );
 endmodule
