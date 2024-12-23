@@ -16,13 +16,16 @@ module uart_tx (
     reg [3:0] bit_index = 0;
     reg [9:0] tx_shift = 0;
 
-    // Logic here for UART transmission (state machine, bit shifting, etc.)
-
+    // UART TX logic
     always @(posedge clk or posedge rst) begin
         if (rst) begin
-            // Reset internal state
+            tick_count <= 0;
+            bit_index <= 0;
+            tx <= 1; // Idle state of UART TX
+            busy <= 0;
         end else begin
-            // UART TX logic
+            // Logic to transmit data, update tx_shift, and set busy
+            // (to be implemented based on UART protocol)
         end
     end
 endmodule
