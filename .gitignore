@@ -1,0 +1,54 @@
+# Ignore Xilinx project files
+*.xise
+*.gise
+*.prj
+*.xrpt
+*.cmd_log
+*.lso
+*.syr
+*.stx
+
+# Ignore simulation files
+isim/
+xst/
+
+# Ignore temporary files
+*.log
+*.tmp
+
+# Ignore generated files from synthesis and simulation
+*.html
+*.xml
+*.ini
+
+# Ignore IP core directories
+ipcore_dir/
+
+# Ignore WebTalk-related files
+webtalk_*.xml
+
+# Ignore temporary build files and other output
+*.ngc
+*.ngd
+*.bit
+*.xwbt
+*.ncd
+*.twr
+*.bgn
+*.tcl
+*.ut
+*.map
+*.xmsgs/
+*.rbt
+*.drc
+*.par
+*.pad
+*.xpi
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore any user-specific files
+*.bak
+*.sav
