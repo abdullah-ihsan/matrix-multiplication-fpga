@@ -15,13 +15,16 @@ module uart_rx (
     reg [3:0] bit_index = 0;
     reg [9:0] rx_shift = 0;
 
-    // Logic here for UART reception (state machine, bit sampling, etc.)
-
+    // UART RX logic
     always @(posedge clk or posedge rst) begin
         if (rst) begin
-            // Reset internal state
+            tick_count <= 0;
+            bit_index <= 0;
+            rx_shift <= 0;
+            valid <= 0;
         end else begin
-            // UART RX logic
+            // Logic to sample RX input, store data in rx_shift, and set valid
+            // (to be implemented based on UART protocol)
         end
     end
 endmodule
