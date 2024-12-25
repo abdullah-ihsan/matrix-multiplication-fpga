@@ -1,54 +1,67 @@
-# Ignore Xilinx project files
-*.xise
-*.gise
-*.prj
-*.xrpt
+# intermediate build files
+*.bgn
+*.bit
+*.bld
 *.cmd_log
+*.drc
+*.ll
 *.lso
-*.syr
-*.stx
-
-# Ignore simulation files
-isim/
-xst/
-
-# Ignore temporary files
-*.log
-*.tmp
-
-# Ignore generated files from synthesis and simulation
-*.html
-*.xml
-*.ini
-
-# Ignore IP core directories
-ipcore_dir/
-
-# Ignore WebTalk-related files
-webtalk_*.xml
-
-# Ignore temporary build files and other output
+*.msd
+*.msk
+*.ncd
 *.ngc
 *.ngd
-*.bit
-*.xwbt
-*.ncd
-*.twr
-*.bgn
-*.tcl
-*.ut
-*.map
-*.xmsgs/
-*.rbt
-*.drc
-*.par
+*.ngr
 *.pad
+*.par
+*.pcf
+*.prj
+*.ptwx
+*.rbb
+*.rbd
+*.stx
+*.syr
+*.twr
+*.twx
+*.unroutes
+*.ut
 *.xpi
+*.xst
+*_bitgen.xwbt
+*_envsettings.html
+*_map.map
+*_map.mrp
+*_map.ngm
+*_map.xrpt
+*_ngdbuild.xrpt
+*_pad.csv
+*_pad.txt
+*_par.xrpt
+*_summary.html
+*_summary.xml
+*_usage.xml
+*_xst.xrpt
 
-# Ignore OS-specific files
-.DS_Store
-Thumbs.db
+# iMPACT generated files
+_impactbatch.log
+impact.xsl
+impact_impact.xwbt
+ise_impact.cmd
+webtalk_impact.xml
 
-# Ignore any user-specific files
-*.bak
-*.sav
+# Core Generator generated files
+xaw2verilog.log
+
+# project-wide generated files
+*.gise
+par_usage_statistics.html
+usage_statistics_webtalk.html
+webtalk.log
+webtalk_pn.xml
+
+# generated folders
+iseconfig/
+xlnx_auto_0_xdb/
+xst/
+_ngo/
+_xmsgs/
