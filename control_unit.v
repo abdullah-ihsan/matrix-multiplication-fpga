@@ -4,10 +4,12 @@ module control_unit (
     input  wire rx_valid,  // UART RX data valid
     input  wire tx_busy,   // UART TX busy signal
     input  wire mult_done, // Matrix multiplication done
+    input  wire [7:0] rx_data, // Received data from UART
     output reg rx_enable,  // Enable UART RX
     output reg tx_start,   // Start UART TX
     output reg mult_start, // Start multiplication
-    output reg [2:0] current_state // Expose current state
+    output reg [2:0] current_state, // Expose current state
+    output reg [3:0] matrix_size    // Expose matrix size
 );
     // State Encoding
     parameter IDLE            = 3'b000;
@@ -21,7 +23,6 @@ module control_unit (
     reg [2:0] next_state;
 
     // Counters and Registers
-    reg [3:0] matrix_size;
     reg [7:0] element_count;
 
     // State Transition Logic
@@ -88,15 +89,9 @@ module control_unit (
             end
             RECEIVE_MATRIX_A: begin
                 rx_enable = 1;
-                if (rx_valid) begin
-                    element_count = element_count + 1;
-                end
             end
             RECEIVE_MATRIX_B: begin
                 rx_enable = 1;
-                if (rx_valid) begin
-                    element_count = element_count + 1;
-                end
             end
             COMPUTE: begin
                 mult_start = 1;
@@ -113,7 +108,7 @@ module control_unit (
             matrix_size <= 0;
             element_count <= 0;
         end else if (current_state == RECEIVE_SIZE && rx_valid) begin
-            matrix_size <= rx_data;
+            matrix_size <= rx_data[3:0]; // Assuming matrix size is sent as a 4-bit value
             element_count <= 0;
         end else if ((current_state == RECEIVE_MATRIX_A || current_state == RECEIVE_MATRIX_B) && rx_valid) begin
             element_count <= element_count + 1;
