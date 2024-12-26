@@ -2,6 +2,7 @@ module top (
     input  wire clk,  // System clock
     input  wire rst,  // Reset signal
     input  wire rx,   // UART RX
+    input wire [1:0] b_sel, // Baud rate select
     output wire tx    // UART TX
 );
     // Internal connections
@@ -11,13 +12,25 @@ module top (
     wire tx_busy;
     wire mult_done;
 
-    // Instantiate modules
-    uart_rx uart_rx_inst (
+
+    // Internal signals
+    wire bclk_8, bclk;
+
+    // Instantiate BaudRate module
+    BaudRate baud_gen (
         .clk(clk),
+        .b_sel(b_sel),
+        .bclk_8(bclk_8),
+        .bclk(bclk)
+    );
+
+    // Instantiate uart_rx module
+    uart_rx uart_receiver (
+        .clk(bclk),
         .rst(rst),
         .rx(rx),
-        .data(rx_data),
-        .valid(rx_valid)
+        .data(data),
+        .valid(valid)
     );
 
     uart_tx uart_tx_inst (
