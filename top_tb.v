@@ -53,11 +53,22 @@ module top_tb;
         #20;
         rst = 0;
 
-        // Simulate receiving a byte
-        #100;
-        uart_rx_byte(8'hA5); // Send 0xA5
+        // Simulate receiving matrix size (2x2 matrix)
+        uart_rx_byte(8'h02);
 
-        // Wait for transmission to complete
+        // Simulate receiving Matrix A (2x2 matrix)
+        uart_rx_byte(8'h01); // A[0][0]
+        uart_rx_byte(8'h02); // A[0][1]
+        uart_rx_byte(8'h03); // A[1][0]
+        uart_rx_byte(8'h04); // A[1][1]
+
+        // Simulate receiving Matrix B (2x2 matrix)
+        uart_rx_byte(8'h05); // B[0][0]
+        uart_rx_byte(8'h06); // B[0][1]
+        uart_rx_byte(8'h07); // B[1][0]
+        uart_rx_byte(8'h08); // B[1][1]
+
+        // Wait for multiplication and transmission to complete
         #2000000; // Wait for enough time to complete transmission
 
         // End simulation
