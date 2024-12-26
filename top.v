@@ -14,6 +14,7 @@ module top (
     wire [3:0] a_addr, b_addr, result_addr;
     wire rx_enable, tx_start, mult_start;
     wire [2:0] current_state;
+    wire [3:0] matrix_size;
 
     // Internal signals
     wire bclk_8, bclk;
@@ -90,10 +91,12 @@ module top (
         .rx_valid(rx_valid),
         .tx_busy(tx_busy),
         .mult_done(mult_done),
+        .rx_data(rx_data),
         .rx_enable(rx_enable),
         .tx_start(tx_start),
         .mult_start(mult_start),
-        .current_state(current_state)
+        .current_state(current_state),
+        .matrix_size(matrix_size)
     );
 
     // Addressing logic for matrix memories
