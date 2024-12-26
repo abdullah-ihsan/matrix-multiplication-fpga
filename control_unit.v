@@ -1,31 +1,29 @@
 module control_unit (
-    input  wire clk,       // System clock
-    input  wire rst,       // Reset signal
-    input  wire rx_valid,  // UART RX data valid
-    input  wire tx_busy,   // UART TX busy signal
-    input  wire mult_done, // Matrix multiplication done
-    input  wire [7:0] rx_data, // Received data from UART
-    output reg rx_enable,  // Enable UART RX
-    output reg tx_start,   // Start UART TX
-    output reg mult_start, // Start multiplication
-    output reg [2:0] current_state, // Expose current state
-    output reg [3:0] matrix_size    // Expose matrix size
+    input wire clk,
+    input wire rst,
+    input wire rx_valid,
+    input wire tx_busy,
+    input wire mult_done,
+    input wire [7:0] rx_data,
+    output reg rx_enable,
+    output reg tx_start,
+    output reg mult_start,
+    output reg [2:0] current_state,
+    output reg [3:0] matrix_size
 );
-    // State Encoding
-    parameter IDLE            = 3'b000;
-    parameter RECEIVE_SIZE    = 3'b001;
-    parameter RECEIVE_MATRIX_A = 3'b010;
-    parameter RECEIVE_MATRIX_B = 3'b011;
-    parameter COMPUTE         = 3'b100;
-    parameter SEND_RESULT     = 3'b101;
 
-    // State Variables
+    // State encoding
+    localparam IDLE = 3'b000,
+               RECEIVE_SIZE = 3'b001,
+               RECEIVE_MATRIX_A = 3'b010,
+               RECEIVE_MATRIX_B = 3'b011,
+               COMPUTE = 3'b100,
+               SEND_RESULT = 3'b101;
+
     reg [2:0] next_state;
+    reg [15:0] element_count;
 
-    // Counters and Registers
-    reg [7:0] element_count;
-
-    // State Transition Logic
+    // State transition logic
     always @(posedge clk or posedge rst) begin
         if (rst) begin
             current_state <= IDLE;
@@ -36,7 +34,6 @@ module control_unit (
         end
     end
 
-    // Next State Logic
     always @(*) begin
         next_state = current_state;
         case (current_state)
@@ -73,7 +70,7 @@ module control_unit (
         endcase
     end
 
-    // Output Logic
+    // Output logic
     always @(*) begin
         // Default values
         rx_enable = 0;
@@ -102,7 +99,7 @@ module control_unit (
         endcase
     end
 
-    // Update matrix size and element count
+    // Matrix size and element count
     always @(posedge clk or posedge rst) begin
         if (rst) begin
             matrix_size <= 0;

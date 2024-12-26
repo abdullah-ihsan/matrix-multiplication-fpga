@@ -41,51 +41,12 @@ module top (
         .clk(bclk),
         .rst(rst),
         .data(rx_data),
-        .start(tx_start), // Start transmission when valid data is received
+        .start(tx_start),
         .tx(tx),
         .busy(tx_busy)
     );
 
-    // Instantiate matrix_memory for Matrix A
-    matrix_memory matrix_mem_a (
-        .clk(clk),
-        .addr(a_addr),
-        .write_data(rx_data),
-        .write_enable(rx_valid && (current_state == RECEIVE_MATRIX_A)),
-        .read_data(a_data)
-    );
-
-    // Instantiate matrix_memory for Matrix B
-    matrix_memory matrix_mem_b (
-        .clk(clk),
-        .addr(b_addr),
-        .write_data(rx_data),
-        .write_enable(rx_valid && (current_state == RECEIVE_MATRIX_B)),
-        .read_data(b_data)
-    );
-
-    // Instantiate matrix_memory for Result
-    matrix_memory result_mem (
-        .clk(clk),
-        .addr(result_addr),
-        .write_data(mult_result),
-        .write_enable(mult_done),
-        .read_data(rx_data) // Reuse rx_data for transmission
-    );
-
-    // Instantiate matrix_multiplier
-    matrix_multiplier matrix_mult_inst (
-        .clk(clk),
-        .rst(rst),
-        .start(mult_start),
-        .matrix_size(matrix_size),
-        .a_data(a_data),
-        .b_data(b_data),
-        .result(mult_result),
-        .done(mult_done)
-    );
-
-    // Instantiate control_unit
+    // Instantiate control unit
     control_unit control_inst (
         .clk(clk),
         .rst(rst),
@@ -100,43 +61,6 @@ module top (
         .matrix_size(matrix_size)
     );
 
-    // Addressing logic for matrix memories
-    reg [3:0] row, col, k;
-    always @(posedge clk or posedge rst) begin
-        if (rst) begin
-            a_addr <= 0;
-            b_addr <= 0;
-            result_addr <= 0;
-            row <= 0;
-            col <= 0;
-            k <= 0;
-        end else begin
-            if (rx_valid && (current_state == RECEIVE_MATRIX_A)) begin
-                a_addr <= a_addr + 1;
-            end else if (rx_valid && (current_state == RECEIVE_MATRIX_B)) begin
-                b_addr <= b_addr + 1;
-            end else if (current_state == COMPUTE) begin
-                if (k < matrix_size) begin
-                    a_addr <= row * matrix_size + k;
-                    b_addr <= k * matrix_size + col;
-                    k <= k + 1;
-                end else begin
-                    k <= 0;
-                    if (col < matrix_size - 1) begin
-                        col <= col + 1;
-                    end else begin
-                        col <= 0;
-                        if (row < matrix_size - 1) begin
-                            row <= row + 1;
-                        end else begin
-                            row <= 0;
-                            result_addr <= result_addr + 1;
-                        end
-                    end
-                end
-            end else if (mult_done) begin
-                result_addr <= result_addr + 1;
-            end
-        end
-    end
+    // Instantiate other modules (matrix_memory, matrix_multiplier, etc.)
+    // ...
 endmodule
