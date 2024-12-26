@@ -9,6 +9,7 @@ module uart_rx (
     // Internal signals
     reg [3:0] bit_index = 0;
     reg [9:0] rx_shift = 0;
+    reg [1:0] state = 0; // 0: idle, 1: receiving, 2: stop bit
 
     // UART RX logic
     always @(posedge clk or posedge rst) begin
@@ -16,9 +17,31 @@ module uart_rx (
             bit_index <= 0;
             rx_shift <= 0;
             valid <= 0;
+            state <= 0;
         end else begin
-            // Logic to sample RX input, store data in rx_shift, and set valid
-            // (to be implemented based on UART protocol)
+            case (state)
+                0: begin // Idle state
+                    if (rx == 0) begin // Start bit detected
+                        state <= 1;
+                        bit_index <= 0;
+                    end
+                    valid <= 0;
+                end
+                1: begin // Receiving data bits
+                    rx_shift[bit_index] <= rx;
+                    bit_index <= bit_index + 1;
+                    if (bit_index == 7) begin
+                        state <= 2;
+                    end
+                end
+                2: begin // Stop bit
+                    if (rx == 1) begin // Stop bit detected
+                        data <= rx_shift[7:0];
+                        valid <= 1;
+                    end
+                    state <= 0;
+                end
+            endcase
         end
     end
 endmodule
