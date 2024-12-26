@@ -32,12 +32,12 @@ module uart_rx (
                     bit_index <= bit_index + 1;
                     if (bit_index == 7) begin
                         state <= 2;
+                        valid <= 1;
                     end
                 end
                 2: begin // Stop bit
                     if (rx == 1) begin // Stop bit detected
                         data <= rx_shift[7:0];
-                        valid <= 1;
                     end
                     state <= 0;
                 end
