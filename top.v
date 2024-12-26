@@ -48,7 +48,7 @@ module top (
 
     // Instantiate control unit
     control_unit control_inst (
-        .clk(clk),
+        .clk(bclk),
         .rst(rst),
         .rx_valid(rx_valid),
         .tx_busy(tx_busy),

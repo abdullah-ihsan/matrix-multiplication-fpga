@@ -107,9 +107,7 @@ module control_unit (
         end else if (current_state == RECEIVE_SIZE && rx_valid) begin
             matrix_size <= rx_data[3:0]; // Assuming matrix size is sent as a 4-bit value
             element_count <= 0;
-        end else if (current_state == RECEIVE_MATRIX_A && rx_valid) begin
-            element_count <= element_count + 1;
-        end else if (current_state == RECEIVE_MATRIX_B && rx_valid) begin
+        end else if ((current_state == RECEIVE_MATRIX_A || current_state == RECEIVE_MATRIX_B) && rx_valid) begin
             element_count <= element_count + 1;
         end else if (current_state == SEND_RESULT && !tx_busy) begin
             element_count <= element_count - 1;
