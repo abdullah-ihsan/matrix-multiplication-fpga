@@ -6,7 +6,8 @@ module control_unit (
     input  wire mult_done, // Matrix multiplication done
     output reg rx_enable,  // Enable UART RX
     output reg tx_start,   // Start UART TX
-    output reg mult_start  // Start multiplication
+    output reg mult_start, // Start multiplication
+    output reg [2:0] current_state // Expose current state
 );
     // State Encoding
     parameter IDLE            = 3'b000;
@@ -17,7 +18,6 @@ module control_unit (
     parameter SEND_RESULT     = 3'b101;
 
     // State Variables
-    reg [2:0] current_state;
     reg [2:0] next_state;
 
     // Counters and Registers
