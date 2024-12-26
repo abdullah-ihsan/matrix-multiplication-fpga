@@ -2,16 +2,13 @@ module top (
     input  wire clk,  // System clock
     input  wire rst,  // Reset signal
     input  wire rx,   // UART RX
-    input wire [1:0] b_sel, // Baud rate select
+    input  wire [1:0] b_sel, // Baud rate select
     output wire tx    // UART TX
 );
     // Internal connections
     wire [7:0] rx_data;
     wire rx_valid;
-    wire [7:0] tx_data;
     wire tx_busy;
-    wire mult_done;
-
 
     // Internal signals
     wire bclk_8, bclk;
@@ -29,15 +26,16 @@ module top (
         .clk(bclk),
         .rst(rst),
         .rx(rx),
-        .data(data),
-        .valid(valid)
+        .data(rx_data),
+        .valid(rx_valid)
     );
 
-    uart_tx uart_tx_inst (
-        .clk(clk),
+    // Instantiate uart_tx module
+    uart_tx uart_transmitter (
+        .clk(bclk),
         .rst(rst),
-        .data(tx_data),
-        .start(tx_start),
+        .data(rx_data),
+        .start(rx_valid), // Start transmission when valid data is received
         .tx(tx),
         .busy(tx_busy)
     );
