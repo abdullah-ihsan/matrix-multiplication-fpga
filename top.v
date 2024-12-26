@@ -42,40 +42,40 @@ module top (
         .busy(tx_busy)
     );
 
-    matrix_memory matrix_mem_a (
-        .clk(clk),
-        .addr(a_addr),
-        .write_data(rx_data),
-        .write_enable(rx_valid),
-        .read_data(a_data)
-    );
+    // matrix_memory matrix_mem_a (
+    //     .clk(clk),
+    //     .addr(a_addr),
+    //     .write_data(rx_data),
+    //     .write_enable(rx_valid),
+    //     .read_data(a_data)
+    // );
 
-    matrix_memory matrix_mem_b (
-        .clk(clk),
-        .addr(b_addr),
-        .write_data(rx_data),
-        .write_enable(rx_valid),
-        .read_data(b_data)
-    );
+    // matrix_memory matrix_mem_b (
+    //     .clk(clk),
+    //     .addr(b_addr),
+    //     .write_data(rx_data),
+    //     .write_enable(rx_valid),
+    //     .read_data(b_data)
+    // );
 
-    matrix_multiplier matrix_mult_inst (
-        .clk(clk),
-        .rst(rst),
-        .a_data(a_data),
-        .b_data(b_data),
-        .start(mult_start),
-        .result(mult_result),
-        .done(mult_done)
-    );
+    // matrix_multiplier matrix_mult_inst (
+    //     .clk(clk),
+    //     .rst(rst),
+    //     .a_data(a_data),
+    //     .b_data(b_data),
+    //     .start(mult_start),
+    //     .result(mult_result),
+    //     .done(mult_done)
+    // );
 
-    control_unit control_inst (
-        .clk(clk),
-        .rst(rst),
-        .rx_valid(rx_valid),
-        .tx_busy(tx_busy),
-        .mult_done(mult_done),
-        .rx_enable(rx_enable),
-        .tx_start(tx_start),
-        .mult_start(mult_start)
-    );
+    // control_unit control_inst (
+    //     .clk(clk),
+    //     .rst(rst),
+    //     .rx_valid(rx_valid),
+    //     .tx_busy(tx_busy),
+    //     .mult_done(mult_done),
+    //     .rx_enable(rx_enable),
+    //     .tx_start(tx_start),
+    //     .mult_start(mult_start)
+    // );
 endmodule
