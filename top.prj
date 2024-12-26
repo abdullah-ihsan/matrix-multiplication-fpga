@@ -1,4 +1,0 @@
-verilog work "tx.v"
-verilog work "rx.v"
-verilog work "BaudRate.v"
-verilog work "top.v"
