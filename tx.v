@@ -24,7 +24,7 @@ module uart_tx (
             case (state)
                 0: begin // Idle state
                     if (start) begin
-                        tx_shift <= {1'b1, data, 1'b0}; // Load data with start and stop bits
+                        tx_shift <= data; // Load data with start and stop bits
                         bit_index <= 0;
                         busy <= 1;
                         state <= 1;
