@@ -85,6 +85,22 @@ module top (
         .matrix_size(matrix_size)
     );
 
+        // Instantiate Calculator module
+    Calculator matrix_mult_inst (
+        .clk(clk),
+        .enable_multiplication(mult_start),
+        .A00(a_data[15:0]), .A01(a_data[31:16]), .A02(a_data[47:32]),
+        .A10(a_data[63:48]), .A11(a_data[79:64]), .A12(a_data[95:80]),
+        .A20(a_data[111:96]), .A21(a_data[127:112]), .A22(a_data[143:128]),
+        .B00(b_data[15:0]), .B01(b_data[31:16]), .B02(b_data[47:32]),
+        .B10(b_data[63:48]), .B11(b_data[79:64]), .B12(b_data[95:80]),
+        .B20(b_data[111:96]), .B21(b_data[127:112]), .B22(b_data[143:128]),
+        .R00(mult_result[15:0]), .R01(mult_result[31:16]), .R02(mult_result[47:32]),
+        .R10(mult_result[63:48]), .R11(mult_result[79:64]), .R12(mult_result[95:80]),
+        .R20(mult_result[111:96]), .R21(mult_result[127:112]), .R22(mult_result[143:128])
+    );
+
+
     // Addressing logic for matrix memories
     always @(posedge bclk or posedge rst) begin
         if (rst) begin
