@@ -87,7 +87,7 @@ module top (
 
         // Instantiate Calculator module
     Calculator matrix_mult_inst (
-        .clk(clk),
+        .clk(bclk),
         .enable_multiplication(mult_start),
         .A00(a_data[15:0]), .A01(a_data[31:16]), .A02(a_data[47:32]),
         .A10(a_data[63:48]), .A11(a_data[79:64]), .A12(a_data[95:80]),
