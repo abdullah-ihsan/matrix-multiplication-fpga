@@ -15,8 +15,17 @@ module top (
     wire [2:0] current_state;
     wire [3:0] matrix_size;
 
+
     // Internal signals
     wire bclk_8, bclk;
+
+        // State encoding
+    localparam IDLE = 3'b000,
+               RECEIVE_SIZE = 3'b001,
+               RECEIVE_MATRIX_A = 3'b010,
+               RECEIVE_MATRIX_B = 3'b011,
+               COMPUTE = 3'b100,
+               SEND_RESULT = 3'b101;
 
     // Instantiate BaudRate module
     BaudRate baud_gen (
