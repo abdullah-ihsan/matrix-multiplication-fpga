@@ -9,7 +9,9 @@ module control_unit (
     output reg tx_start,
     output reg mult_start,
     output reg [2:0] current_state,
-    output reg [3:0] matrix_size
+    output reg [3:0] matrix_size,
+    output reg read_enable_a,
+    output reg read_enable_b
 );
 
     // State encoding
@@ -77,6 +79,8 @@ module control_unit (
         rx_enable = 0;
         tx_start = 0;
         mult_start = 0;
+        read_enable_a = 0;
+        read_enable_b = 0;
 
         case (current_state)
             IDLE: begin
@@ -93,6 +97,8 @@ module control_unit (
             end
             COMPUTE: begin
                 mult_start = 1;
+                read_enable_a = 1;
+                read_enable_b = 1;
             end
             SEND_RESULT: begin
                 tx_start = 1;

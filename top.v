@@ -63,7 +63,9 @@ module top (
         .addr(a_addr),
         .write_data(rx_data),
         .write_enable(rx_valid && (current_state == RECEIVE_MATRIX_A)),
-        .read_data(a_data)
+        .read_enable(read_enable_a),
+        //.read_data(),
+        .a_data(a_data)
     );
 
     // Instantiate matrix_memory for Matrix B
@@ -72,7 +74,9 @@ module top (
         .addr(b_addr),
         .write_data(rx_data),
         .write_enable(rx_valid && (current_state == RECEIVE_MATRIX_B)),
-        .read_data(b_data)
+        .read_enable(read_enable_b),
+        //.read_data(),
+        .a_data(b_data)
     );
 
     // Instantiate control_unit
