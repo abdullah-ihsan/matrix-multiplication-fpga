@@ -56,7 +56,7 @@ module top (
 
     // Instantiate matrix_memory for Matrix A
     matrix_memory matrix_mem_a (
-        .clk(clk),
+        .clk(bclk),
         .addr(a_addr),
         .write_data(rx_data),
         .write_enable(rx_valid && (current_state == RECEIVE_MATRIX_A)),
@@ -65,7 +65,7 @@ module top (
 
     // Instantiate matrix_memory for Matrix B
     matrix_memory matrix_mem_b (
-        .clk(clk),
+        .clk(bclk),
         .addr(b_addr),
         .write_data(rx_data),
         .write_enable(rx_valid && (current_state == RECEIVE_MATRIX_B)),
@@ -74,7 +74,7 @@ module top (
 
     // Instantiate control_unit
     control_unit control_inst (
-        .clk(clk),
+        .clk(bclk),
         .rst(rst),
         .rx_valid(rx_valid),
         .tx_busy(tx_busy),
@@ -86,7 +86,7 @@ module top (
     );
 
     // Addressing logic for matrix memories
-    always @(posedge clk or posedge rst) begin
+    always @(posedge bclk or posedge rst) begin
         if (rst) begin
             a_addr <= 0;
             b_addr <= 0;
