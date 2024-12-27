@@ -9,17 +9,20 @@ module top (
     wire [7:0] rx_data;
     wire rx_valid;
     wire tx_busy;
-    wire [31:0] a_data, b_data;
+    wire [71:0] a_data, b_data; // 9 elements * 8 bits each
     wire [3:0] a_addr, b_addr;
-    wire rx_enable, tx_start;
+    wire [143:0] mult_result;
+    wire rx_enable, tx_start, mult_start;
     wire [2:0] current_state;
     wire [3:0] matrix_size;
-
+    wire [3:0] read_addr_a, read_addr_b;
+    wire read_enable_a, read_enable_b;
+    wire mult_done;
 
     // Internal signals
     wire bclk_8, bclk;
 
-        // State encoding
+    // State encoding
     localparam IDLE = 3'b000,
                RECEIVE_SIZE = 3'b001,
                RECEIVE_MATRIX_A = 3'b010,
@@ -78,28 +81,33 @@ module top (
         .rst(rst),
         .rx_valid(rx_valid),
         .tx_busy(tx_busy),
+        .mult_done(mult_done),
         .rx_data(rx_data),
         .rx_enable(rx_enable),
         .tx_start(tx_start),
+        .mult_start(mult_start),
         .current_state(current_state),
-        .matrix_size(matrix_size)
+        .matrix_size(matrix_size),
+        .read_addr_a(read_addr_a),
+        .read_addr_b(read_addr_b),
+        .read_enable_a(read_enable_a),
+        .read_enable_b(read_enable_b)
     );
 
-        // Instantiate Calculator module
+    // Instantiate Calculator module
     Calculator matrix_mult_inst (
         .clk(bclk),
         .enable_multiplication(mult_start),
-        .A00(a_data[15:0]), .A01(a_data[31:16]), .A02(a_data[47:32]),
-        .A10(a_data[63:48]), .A11(a_data[79:64]), .A12(a_data[95:80]),
-        .A20(a_data[111:96]), .A21(a_data[127:112]), .A22(a_data[143:128]),
-        .B00(b_data[15:0]), .B01(b_data[31:16]), .B02(b_data[47:32]),
-        .B10(b_data[63:48]), .B11(b_data[79:64]), .B12(b_data[95:80]),
-        .B20(b_data[111:96]), .B21(b_data[127:112]), .B22(b_data[143:128]),
+        .A00(a_data[7:0]), .A01(a_data[15:8]), .A02(a_data[23:16]),
+        .A10(a_data[31:24]), .A11(a_data[39:32]), .A12(a_data[47:40]),
+        .A20(a_data[55:48]), .A21(a_data[63:56]), .A22(a_data[71:64]),
+        .B00(b_data[7:0]), .B01(b_data[15:8]), .B02(b_data[23:16]),
+        .B10(b_data[31:24]), .B11(b_data[39:32]), .B12(b_data[47:40]),
+        .B20(b_data[55:48]), .B21(b_data[63:56]), .B22(b_data[71:64]),
         .R00(mult_result[15:0]), .R01(mult_result[31:16]), .R02(mult_result[47:32]),
         .R10(mult_result[63:48]), .R11(mult_result[79:64]), .R12(mult_result[95:80]),
         .R20(mult_result[111:96]), .R21(mult_result[127:112]), .R22(mult_result[143:128])
     );
-
 
     // Addressing logic for matrix memories
     always @(posedge bclk or posedge rst) begin
