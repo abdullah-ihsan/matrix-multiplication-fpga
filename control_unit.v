@@ -50,10 +50,11 @@ module control_unit (
             RECEIVE_MATRIX_A: begin
                 if (element_count == (matrix_size * matrix_size - 1) && rx_valid) begin
                     next_state = RECEIVE_MATRIX_B;
+						  element_count = 0;
                 end
             end
             RECEIVE_MATRIX_B: begin
-                if (element_count == (2 * matrix_size * matrix_size - 1) && rx_valid) begin
+                if (element_count == (matrix_size * matrix_size - 1) && rx_valid) begin
                     next_state = COMPUTE;
                 end
             end

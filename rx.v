@@ -40,6 +40,7 @@ module uart_rx (
                         data <= rx_shift[7:0];
                     end
                     state <= 0;
+                    valid <= 0;
                 end
             endcase
         end
