@@ -33,74 +33,56 @@ module control_unit (
             element_count <= 0;
         end else begin
             current_state <= next_state;
-            case (current_state)
-                IDLE: begin
-                    if (rx_valid) begin
-                        next_state <= RECEIVE_SIZE;
-                    end else begin
-                        next_state <= IDLE;
-                    end
-                end
-                RECEIVE_SIZE: begin
-                    if (rx_valid) begin
-                        matrix_size <= rx_data[3:0];
-                        next_state <= RECEIVE_MATRIX_A;
-                    end else begin
-                        next_state <= RECEIVE_SIZE;
-                    end
-                end
-                RECEIVE_MATRIX_A: begin
-                    if (rx_valid) begin
-                        element_count <= element_count + 1;
-                        if (element_count == (matrix_size * matrix_size - 1)) begin
-                            next_state <= RECEIVE_MATRIX_B;
-                            element_count <= 0;
-                        end else begin
-                            next_state <= RECEIVE_MATRIX_A;
-                        end
-                    end else begin
-                        next_state <= RECEIVE_MATRIX_A;
-                    end
-                end
-                RECEIVE_MATRIX_B: begin
-                    if (rx_valid) begin
-                        element_count <= element_count + 1;
-                        if (element_count == (matrix_size * matrix_size - 1)) begin
-                            next_state <= COMPUTE;
-                            element_count <= 0;
-                        end else begin
-                            next_state <= RECEIVE_MATRIX_B;
-                        end
-                    end else begin
-                        next_state <= RECEIVE_MATRIX_B;
-                    end
-                end
-                COMPUTE: begin
-                    if (mult_done) begin
-                        next_state <= SEND_RESULT;
-                    end else begin
-                        next_state <= COMPUTE;
-                    end
-                end
-                SEND_RESULT: begin
-                    if (!tx_busy) begin
-                        next_state <= IDLE;
-                    end else begin
-                        next_state <= SEND_RESULT;
-                    end
-                end
-                default: next_state <= IDLE;
-            endcase
         end
+    end
+
+    always @(*) begin
+        next_state = current_state;
+        case (current_state)
+            IDLE: begin
+                if (rx_valid) begin
+                    next_state = RECEIVE_SIZE;
+                end
+            end
+            RECEIVE_SIZE: begin
+                if (rx_valid) begin
+                    next_state = RECEIVE_MATRIX_A;
+                end
+            end
+            RECEIVE_MATRIX_A: begin
+                if (element_count == (matrix_size * matrix_size - 1) && rx_valid) begin
+                    next_state = RECEIVE_MATRIX_B;
+                    element_count = 0;
+                end
+            end
+            RECEIVE_MATRIX_B: begin
+                if (element_count == (matrix_size * matrix_size - 1) && rx_valid) begin
+                    next_state = COMPUTE;
+                end
+            end
+            COMPUTE: begin
+                if (mult_done) begin
+                    next_state = SEND_RESULT;
+                    element_count = 0;
+                end
+            end
+            SEND_RESULT: begin
+                if (element_count == 18 && !tx_busy) begin // 18 bytes for 9 elements * 2 bytes each
+                    next_state = IDLE;
+                end
+            end
+        endcase
     end
 
     // Output logic
     always @(*) begin
+        // Default values
         rx_enable = 0;
         tx_start = 0;
         mult_start = 0;
         read_enable_a = 0;
         read_enable_b = 0;
+
         case (current_state)
             IDLE: begin
                 rx_enable = 1;
@@ -110,18 +92,33 @@ module control_unit (
             end
             RECEIVE_MATRIX_A: begin
                 rx_enable = 1;
-                read_enable_a = 1;
             end
             RECEIVE_MATRIX_B: begin
                 rx_enable = 1;
-                read_enable_b = 1;
             end
             COMPUTE: begin
                 mult_start = 1;
+                read_enable_a = 1;
+                read_enable_b = 1;
             end
             SEND_RESULT: begin
                 tx_start = 1;
             end
         endcase
+    end
+
+    // Matrix size and element count
+    always @(posedge clk or posedge rst) begin
+        if (rst) begin
+            matrix_size <= 0;
+            element_count <= 0;
+        end else if (current_state == RECEIVE_SIZE) begin
+            matrix_size <= rx_data[3:0]; // Assuming matrix size is sent as a 4-bit value
+            element_count <= 0;
+        end else if ((current_state == RECEIVE_MATRIX_A || current_state == RECEIVE_MATRIX_B) && rx_valid) begin
+            element_count <= element_count + 1;
+        end else if (current_state == SEND_RESULT && !tx_busy) begin
+            element_count <= element_count + 1;
+        end
     end
 endmodule
