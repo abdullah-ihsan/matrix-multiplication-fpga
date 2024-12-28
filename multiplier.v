@@ -4,7 +4,7 @@ module Calculator(
     input [71:0] A, // Single array for matrix A
     input [71:0] B, // Single array for matrix B
     output reg [143:0] result, // Single array for result
-    output mult_done
+    output reg mult_done
 );
     
     reg [7:0] A1 [0:2][0:2];
