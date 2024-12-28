@@ -50,4 +50,16 @@ module Calculator(
     assign R21 = Res1[2][1];
     assign R22 = Res1[2][2];
 
+    initial begin
+        R00 = 16'd0;
+        R01 = 16'd0;
+        R02 = 16'd0;
+        R10 = 16'd0;
+        R11 = 16'd0;
+        R12 = 16'd0;
+        R20 = 16'd0;
+        R21 = 16'd0;
+        R22 = 16'd0;
+    end
+
 endmodule
