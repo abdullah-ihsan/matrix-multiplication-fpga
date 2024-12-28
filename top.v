@@ -105,7 +105,7 @@ module top (
         .enable_multiplication(mult_start),
         .A(a_data),
         .B(b_data),
-        .result(mult_result)
+        .result(mult_result),
         .mult_done(mult_done)
     );
 
