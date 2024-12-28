@@ -11,7 +11,7 @@ module top (
     wire tx_busy;
     wire [71:0] a_data, b_data; // 9 elements * 8 bits each
     reg [3:0] a_addr, b_addr;
-    reg [143:0] mult_result;
+    wire [143:0] mult_result;
     wire rx_enable, tx_start, mult_start;
     wire [2:0] current_state;
     wire [3:0] matrix_size;
