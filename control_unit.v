@@ -23,49 +23,54 @@ module control_unit (
                SEND_RESULT = 3'b101;
 
     reg [2:0] next_state;
-    reg [15:0] element_count;
-    wire matrix_a_done = (element_count == (matrix_size * matrix_size - 1) && rx_valid);
-    wire matrix_b_done = (element_count == (matrix_size * matrix_size - 1) && rx_valid);
-    wire result_done = (element_count == 18 && !tx_busy);
+    reg [15:0] elements_received;  // Counter for receiving elements
+    reg [15:0] elements_sent;      // Counter for sending results
+    
+    // Calculate total elements needed for one matrix
+    wire [15:0] total_elements = matrix_size * matrix_size;
+    // Completion flags
+    wire matrix_a_done = (elements_received == total_elements - 1) && rx_valid && (current_state == RECEIVE_MATRIX_A);
+    wire matrix_b_done = (elements_received == total_elements - 1) && rx_valid && (current_state == RECEIVE_MATRIX_B);
+    wire result_done = (elements_sent == 18 && !tx_busy);  // 18 bytes for 9 elements * 2 bytes each
 
     // State transition logic
     always @(posedge clk or posedge rst) begin
         if (rst) begin
             current_state <= IDLE;
             matrix_size <= 0;
-            element_count <= 0;
+            elements_received <= 0;
+            elements_sent <= 0;
         end else begin
             current_state <= next_state;
             
-            // Handle element_count and matrix_size updates
             case (current_state)
                 RECEIVE_SIZE: begin
                     if (rx_valid) begin
                         matrix_size <= rx_data[3:0];
-                        element_count <= 0;
+                        elements_received <= 0;
                     end
                 end
                 RECEIVE_MATRIX_A: begin
                     if (rx_valid) begin
                         if (matrix_a_done)
-                            element_count <= 0;
+                            elements_received <= 0;
                         else
-                            element_count <= element_count + 1;
+                            elements_received <= elements_received + 1;
                     end
                 end
                 RECEIVE_MATRIX_B: begin
                     if (rx_valid) begin
-                        element_count <= element_count + 1;
+                        elements_received <= elements_received + 1;
                     end
                 end
                 COMPUTE: begin
                     if (mult_done) begin
-                        element_count <= 0;
+                        elements_sent <= 0;
                     end
                 end
                 SEND_RESULT: begin
                     if (!tx_busy) begin
-                        element_count <= element_count + 1;
+                        elements_sent <= elements_sent + 1;
                     end
                 end
             endcase
