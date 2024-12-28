@@ -52,7 +52,7 @@ module control_unit (
             RECEIVE_MATRIX_A: begin
                 if (element_count == (matrix_size * matrix_size - 1) && rx_valid) begin
                     next_state = RECEIVE_MATRIX_B;
-						  element_count = 0;
+                    element_count = 0;
                 end
             end
             RECEIVE_MATRIX_B: begin
@@ -63,10 +63,11 @@ module control_unit (
             COMPUTE: begin
                 if (mult_done) begin
                     next_state = SEND_RESULT;
+                    element_count = 0;
                 end
             end
             SEND_RESULT: begin
-                if (!tx_busy) begin
+                if (element_count == 18 && !tx_busy) begin // 18 bytes for 9 elements * 2 bytes each
                     next_state = IDLE;
                 end
             end
@@ -117,7 +118,7 @@ module control_unit (
         end else if ((current_state == RECEIVE_MATRIX_A || current_state == RECEIVE_MATRIX_B) && rx_valid) begin
             element_count <= element_count + 1;
         end else if (current_state == SEND_RESULT && !tx_busy) begin
-            element_count <= element_count - 1;
+            element_count <= element_count + 1;
         end
     end
 endmodule
