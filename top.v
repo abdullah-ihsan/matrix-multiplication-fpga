@@ -10,8 +10,8 @@ module top (
     wire rx_valid;
     wire tx_busy;
     wire [71:0] a_data, b_data; // 9 elements * 8 bits each
-    wire [3:0] a_addr, b_addr;
-    wire [143:0] mult_result;
+    reg [3:0] a_addr, b_addr;
+    reg [143:0] mult_result;
     wire rx_enable, tx_start, mult_start;
     wire [2:0] current_state;
     wire [3:0] matrix_size;
@@ -92,8 +92,6 @@ module top (
         .mult_start(mult_start),
         .current_state(current_state),
         .matrix_size(matrix_size),
-        .read_addr_a(read_addr_a),
-        .read_addr_b(read_addr_b),
         .read_enable_a(read_enable_a),
         .read_enable_b(read_enable_b)
     );
@@ -112,6 +110,10 @@ module top (
         .R10(mult_result[63:48]), .R11(mult_result[79:64]), .R12(mult_result[95:80]),
         .R20(mult_result[111:96]), .R21(mult_result[127:112]), .R22(mult_result[143:128])
     );
+	 
+	 initial begin 
+		mult_result <= 144'b0;
+	 end
 
     // Addressing logic for matrix memories
     always @(posedge bclk or posedge rst) begin

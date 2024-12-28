@@ -1,13 +1,13 @@
 module Calculator(
     input clk,
     input enable_multiplication,  // Control for enabling multiplication
-    input [15:0] A00, A01, A02, A10, A11, A12, A20, A21, A22,
-    input [15:0] B00, B01, B02, B10, B11, B12, B20, B21, B22,
+    input [7:0] A00, A01, A02, A10, A11, A12, A20, A21, A22,
+    input [7:0] B00, B01, B02, B10, B11, B12, B20, B21, B22,
     output [15:0] R00, R01, R02, R10, R11, R12, R20, R21, R22 // Changed reg to wire
 );
     
-    reg [15:0] A1 [0:2][0:2];
-    reg [15:0] B1 [0:2][0:2];
+    reg [7:0] A1 [0:2][0:2];
+    reg [7:0] B1 [0:2][0:2];
     reg [15:0] Res1 [0:2][0:2];
     
     integer i, j, k;
