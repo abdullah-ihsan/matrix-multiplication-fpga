@@ -100,12 +100,8 @@ module top (
     Calculator matrix_mult_inst (
         .clk(bclk),
         .enable_multiplication(mult_start),
-        .A00(a_data[7:0]), .A01(a_data[15:8]), .A02(a_data[23:16]),
-        .A10(a_data[31:24]), .A11(a_data[39:32]), .A12(a_data[47:40]),
-        .A20(a_data[55:48]), .A21(a_data[63:56]), .A22(a_data[71:64]),
-        .B00(b_data[7:0]), .B01(b_data[15:8]), .B02(b_data[23:16]),
-        .B10(b_data[31:24]), .B11(b_data[39:32]), .B12(b_data[47:40]),
-        .B20(b_data[55:48]), .B21(b_data[63:56]), .B22(b_data[71:64]),
+        .A(a_data),
+        .B(b_data),
         .result(mult_result)
     );
 

@@ -1,8 +1,8 @@
 module Calculator(
     input clk,
     input enable_multiplication,  // Control for enabling multiplication
-    input [7:0] A00, A01, A02, A10, A11, A12, A20, A21, A22,
-    input [7:0] B00, B01, B02, B10, B11, B12, B20, B21, B22,
+    input [71:0] A, // Single array for matrix A
+    input [71:0] B, // Single array for matrix B
     output reg [143:0] result // Single array for result
 );
     
@@ -15,13 +15,13 @@ module Calculator(
     always @ (posedge clk) begin
         if (enable_multiplication) begin
             // Convert inputs to 2D arrays for easier processing
-            A1[0][0] = A00; A1[0][1] = A01; A1[0][2] = A02;
-            A1[1][0] = A10; A1[1][1] = A11; A1[1][2] = A12;
-            A1[2][0] = A20; A1[2][1] = A21; A1[2][2] = A22;
+            A1[0][0] = A[7:0];   A1[0][1] = A[15:8];  A1[0][2] = A[23:16];
+            A1[1][0] = A[31:24]; A1[1][1] = A[39:32]; A1[1][2] = A[47:40];
+            A1[2][0] = A[55:48]; A1[2][1] = A[63:56]; A1[2][2] = A[71:64];
         
-            B1[0][0] = B00; B1[0][1] = B01; B1[0][2] = B02;
-            B1[1][0] = B10; B1[1][1] = B11; B1[1][2] = B12;
-            B1[2][0] = B20; B1[2][1] = B21; B1[2][2] = B22;
+            B1[0][0] = B[7:0];   B1[0][1] = B[15:8];  B1[0][2] = B[23:16];
+            B1[1][0] = B[31:24]; B1[1][1] = B[39:32]; B1[1][2] = B[47:40];
+            B1[2][0] = B[55:48]; B1[2][1] = B[63:56]; B1[2][2] = B[71:64];
         
             // Initialize result matrix to zero
             Res1[0][0] = 16'd0; Res1[0][1] = 16'd0; Res1[0][2] = 16'd0;
