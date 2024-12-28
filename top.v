@@ -110,10 +110,17 @@ module top (
         .R10(mult_result[63:48]), .R11(mult_result[79:64]), .R12(mult_result[95:80]),
         .R20(mult_result[111:96]), .R21(mult_result[127:112]), .R22(mult_result[143:128])
     );
-	 
-	 initial begin 
-		mult_result <= 144'b0;
-	 end
+
+    // Monitor mult_result
+    always @(posedge bclk or posedge rst) begin
+        if (rst) begin
+            mult_result <= 144'b0;
+        end else if (mult_done) begin
+            mult_result <= {matrix_mult_inst.R22, matrix_mult_inst.R21, matrix_mult_inst.R20,
+                            matrix_mult_inst.R12, matrix_mult_inst.R11, matrix_mult_inst.R10,
+                            matrix_mult_inst.R02, matrix_mult_inst.R01, matrix_mult_inst.R00};
+        end
+    end
 
     // Addressing logic for matrix memories
     always @(posedge bclk or posedge rst) begin
