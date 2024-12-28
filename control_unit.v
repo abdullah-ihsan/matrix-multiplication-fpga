@@ -29,8 +29,6 @@ module control_unit (
     always @(posedge clk or posedge rst) begin
         if (rst) begin
             current_state <= IDLE;
-            matrix_size <= 0;
-            element_count <= 0;
         end else begin
             current_state <= next_state;
         end
@@ -52,18 +50,16 @@ module control_unit (
             RECEIVE_MATRIX_A: begin
                 if (element_count == (matrix_size * matrix_size - 1) && rx_valid) begin
                     next_state = RECEIVE_MATRIX_B;
-                    element_count = 0;
                 end
             end
             RECEIVE_MATRIX_B: begin
-                if (element_count == (matrix_size * matrix_size - 1) && rx_valid) begin
+                if (element_count == 2*(matrix_size * matrix_size - 1) && rx_valid) begin
                     next_state = COMPUTE;
                 end
             end
             COMPUTE: begin
                 if (mult_done) begin
                     next_state = SEND_RESULT;
-                    element_count = 0;
                 end
             end
             SEND_RESULT: begin
@@ -107,18 +103,33 @@ module control_unit (
         endcase
     end
 
-    // Matrix size and element count
+    // Consolidated logic for matrix size and element count
     always @(posedge clk or posedge rst) begin
         if (rst) begin
             matrix_size <= 0;
             element_count <= 0;
-        end else if (current_state == RECEIVE_SIZE) begin
-            matrix_size <= rx_data[3:0]; // Assuming matrix size is sent as a 4-bit value
-            element_count <= 0;
-        end else if ((current_state == RECEIVE_MATRIX_A || current_state == RECEIVE_MATRIX_B) && rx_valid) begin
-            element_count <= element_count + 1;
-        end else if (current_state == SEND_RESULT && !tx_busy) begin
-            element_count <= element_count + 1;
+        end else begin
+            case (current_state)
+                RECEIVE_SIZE: begin
+                    if (rx_valid) begin
+                        matrix_size <= rx_data[3:0]; // Assuming matrix size is sent as a 4-bit value
+                        element_count <= 0;
+                    end
+                end
+                RECEIVE_MATRIX_A, RECEIVE_MATRIX_B: begin
+                    if (rx_valid) begin
+                        element_count <= element_count + 1;
+                    end
+                end
+                SEND_RESULT: begin
+                    if (!tx_busy) begin
+                        element_count <= element_count + 1;
+                    end
+                end
+                default: begin
+                    element_count <= 0;
+                end
+            endcase
         end
     end
 endmodule
