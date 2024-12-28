@@ -21,8 +21,6 @@ module top (
 
     // Internal signals
     wire bclk_8, bclk;
-    reg [7:0] result_byte;
-    reg [3:0] result_index;
 
     // State encoding
     localparam IDLE = 3'b000,
@@ -53,7 +51,7 @@ module top (
     uart_tx uart_transmitter (
         .clk(bclk),
         .rst(rst),
-        .data(result_byte),
+        .data(rx_data), // For now, just loop back the received data
         .start(tx_start),
         .tx(tx),
         .busy(tx_busy)
@@ -66,6 +64,7 @@ module top (
         .write_data(rx_data),
         .write_enable(rx_valid && (current_state == RECEIVE_MATRIX_A)),
         .read_enable(read_enable_a),
+        //.read_data(),
         .a_data(a_data)
     );
 
@@ -76,6 +75,7 @@ module top (
         .write_data(rx_data),
         .write_enable(rx_valid && (current_state == RECEIVE_MATRIX_B)),
         .read_enable(read_enable_b),
+        //.read_data(),
         .a_data(b_data)
     );
 
@@ -105,14 +105,23 @@ module top (
         .result(mult_result)
     );
 
-    // Result transmission logic
-    always @(posedge clk or posedge rst) begin
+    // Addressing logic for matrix memories
+    always @(posedge bclk or posedge rst) begin
         if (rst) begin
+            a_addr <= 0;
+            b_addr <= 0;
             result_index <= 0;
             result_byte <= 0;
-        end else if (current_state == SEND_RESULT && !tx_busy) begin
+        end 
+        else begin
+            if (rx_valid && (current_state == RECEIVE_MATRIX_A)) begin
+                a_addr <= a_addr + 1;
+            end else if (rx_valid && (current_state == RECEIVE_MATRIX_B)) begin
+                b_addr <= b_addr + 1;
+            end else if (current_state == SEND_RESULT && !tx_busy) begin
             result_byte <= mult_result[(result_index*8) +: 8];
             result_index <= result_index + 1;
+        end
         end
     end
 endmodule
