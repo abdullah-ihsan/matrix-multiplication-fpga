@@ -25,7 +25,7 @@ module control_unit (
     reg [2:0] next_state;
     reg [15:0] element_count;
 
-    // State transition logic
+
     always @(posedge clk or posedge rst) begin
         if (rst) begin
             current_state <= IDLE;
@@ -34,10 +34,21 @@ module control_unit (
         end else begin
             current_state <= next_state;
         end
-    end
 
-    always @(*) begin
         next_state = current_state;
+
+        if (rst) begin
+            matrix_size <= 0;
+            element_count <= 0;
+        end else if (current_state == RECEIVE_SIZE) begin
+            matrix_size <= rx_data[3:0]; // Assuming matrix size is sent as a 4-bit value
+            element_count <= 0;
+        end else if ((current_state == RECEIVE_MATRIX_A || current_state == RECEIVE_MATRIX_B) && rx_valid) begin
+            element_count <= element_count + 1;
+        end else if (current_state == SEND_RESULT && !tx_busy) begin
+            element_count <= element_count + 1;
+        end
+
         case (current_state)
             IDLE: begin
                 if (rx_valid) begin
@@ -105,20 +116,5 @@ module control_unit (
                 tx_start = 1;
             end
         endcase
-    end
-
-    // Matrix size and element count
-    always @(posedge clk or posedge rst) begin
-        if (rst) begin
-            matrix_size <= 0;
-            element_count <= 0;
-        end else if (current_state == RECEIVE_SIZE) begin
-            matrix_size <= rx_data[3:0]; // Assuming matrix size is sent as a 4-bit value
-            element_count <= 0;
-        end else if ((current_state == RECEIVE_MATRIX_A || current_state == RECEIVE_MATRIX_B) && rx_valid) begin
-            element_count <= element_count + 1;
-        end else if (current_state == SEND_RESULT && !tx_busy) begin
-            element_count <= element_count + 1;
-        end
     end
 endmodule
