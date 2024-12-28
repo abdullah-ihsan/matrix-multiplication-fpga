@@ -106,21 +106,8 @@ module top (
         .B00(b_data[7:0]), .B01(b_data[15:8]), .B02(b_data[23:16]),
         .B10(b_data[31:24]), .B11(b_data[39:32]), .B12(b_data[47:40]),
         .B20(b_data[55:48]), .B21(b_data[63:56]), .B22(b_data[71:64]),
-        .R00(mult_result[15:0]), .R01(mult_result[31:16]), .R02(mult_result[47:32]),
-        .R10(mult_result[63:48]), .R11(mult_result[79:64]), .R12(mult_result[95:80]),
-        .R20(mult_result[111:96]), .R21(mult_result[127:112]), .R22(mult_result[143:128])
+        .result(mult_result)
     );
-
-    // Monitor mult_result
-    always @(posedge bclk or posedge rst) begin
-        if (rst) begin
-            mult_result <= 144'b0;
-        end else if (mult_done) begin
-            mult_result <= {matrix_mult_inst.R22, matrix_mult_inst.R21, matrix_mult_inst.R20,
-                            matrix_mult_inst.R12, matrix_mult_inst.R11, matrix_mult_inst.R10,
-                            matrix_mult_inst.R02, matrix_mult_inst.R01, matrix_mult_inst.R00};
-        end
-    end
 
     // Addressing logic for matrix memories
     always @(posedge bclk or posedge rst) begin
