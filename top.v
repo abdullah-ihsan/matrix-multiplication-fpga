@@ -21,6 +21,9 @@ module top (
 
     // Internal signals
     wire bclk_8, bclk;
+    reg [7:0] result_byte;
+    reg [3:0] result_index;
+
 
     // State encoding
     localparam IDLE = 3'b000,
@@ -51,7 +54,7 @@ module top (
     uart_tx uart_transmitter (
         .clk(bclk),
         .rst(rst),
-        .data(rx_data), // For now, just loop back the received data
+        .data(result_byte), // For now, just loop back the received data
         .start(tx_start),
         .tx(tx),
         .busy(tx_busy)
@@ -103,6 +106,7 @@ module top (
         .A(a_data),
         .B(b_data),
         .result(mult_result)
+        .mult_done(mult_done)
     );
 
     // Addressing logic for matrix memories
