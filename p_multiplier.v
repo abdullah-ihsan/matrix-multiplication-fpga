@@ -5,32 +5,41 @@ module matrix_mult_parallel_flat #(
     input [31:0] matrix_size,         // Current size of the matrices (1 to MAX_SIZE)
     input [(MAX_SIZE*MAX_SIZE*DATA_WIDTH)-1:0] A, // Flattened input matrix A
     input [(MAX_SIZE*MAX_SIZE*DATA_WIDTH)-1:0] B, // Flattened input matrix B
-    output reg [(MAX_SIZE*MAX_SIZE*DATA_WIDTH)-1:0] C // Flattened output matrix C
+    output [(MAX_SIZE*MAX_SIZE*DATA_WIDTH)-1:0] C // Flattened output matrix C
 );
-    integer i, j, k;
-    reg [DATA_WIDTH-1:0] a_element;
-    reg [DATA_WIDTH-1:0] b_element;
-    reg [DATA_WIDTH-1:0] temp_sum;
+    genvar i, j, k;
 
-    always @(*) begin
-        // Initialize C to zero
-        C = 0;
-        
-        // Perform matrix multiplication
-        for (i = 0; i < MAX_SIZE; i = i + 1) begin
-            for (j = 0; j < MAX_SIZE; j = j + 1) begin
-                temp_sum = 0;
-                for (k = 0; k < MAX_SIZE; k = k + 1) begin
-                    if (i < matrix_size && j < matrix_size && k < matrix_size) begin
-                        // Extract elements from the flattened arrays
-                        a_element = A[((i * MAX_SIZE + k) * DATA_WIDTH) +: DATA_WIDTH];
-                        b_element = B[((k * MAX_SIZE + j) * DATA_WIDTH) +: DATA_WIDTH];
-                        temp_sum = temp_sum + (a_element * b_element);
+    // Intermediate partial sums for each element of C
+    wire [DATA_WIDTH-1:0] partial_sum [0:MAX_SIZE-1][0:MAX_SIZE-1][0:MAX_SIZE-1];
+
+    // Final sums for each element of C
+    reg [DATA_WIDTH-1:0] final_sum [0:MAX_SIZE-1][0:MAX_SIZE-1];
+
+    // Generate logic to compute all elements of C in parallel
+    generate
+        for (i = 0; i < MAX_SIZE; i = i + 1) begin : row_loop
+            for (j = 0; j < MAX_SIZE; j = j + 1) begin : col_loop
+                for (k = 0; k < MAX_SIZE; k = k + 1) begin : mult_loop
+                    // Calculate partial products in parallel
+                    assign partial_sum[i][j][k] =
+                        (i < matrix_size && j < matrix_size && k < matrix_size)
+                        ? A[((i * MAX_SIZE + k) * DATA_WIDTH) +: DATA_WIDTH] *
+                          B[((k * MAX_SIZE + j) * DATA_WIDTH) +: DATA_WIDTH]
+                        : 0;
+                end
+
+                // Add partial sums for C[i][j] in a parallel always block
+                always @(*) begin
+                    final_sum[i][j] = 0;
+                    for (k = 0; k < MAX_SIZE; k = k + 1) begin
+                        final_sum[i][j] = final_sum[i][j] + partial_sum[i][j][k];
                     end
                 end
-                // Assign the result to the appropriate location in the flattened C
-                C[((i * MAX_SIZE + j) * DATA_WIDTH) +: DATA_WIDTH] = temp_sum;
+
+                // Assign the final sum to the corresponding position in C
+                assign C[((i * MAX_SIZE + j) * DATA_WIDTH) +: DATA_WIDTH] =
+                    (i < matrix_size && j < matrix_size) ? final_sum[i][j] : 0;
             end
         end
-    end
+    endgenerate
 endmodule
