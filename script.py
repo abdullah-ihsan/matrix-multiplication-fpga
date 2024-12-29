@@ -1,96 +1,83 @@
 import serial
-import struct
+import threading
 import time
 
-def send_data(serial_port, matrix_a, matrix_b):
-    """
-    Sends matrix size and two 3x3 matrices to the FPGA over UART.
-    The matrices are serialized row by row.
-    """
-    rows = len(matrix_a)
-    cols = len(matrix_a[0])
-    if rows != 3 or cols != 3 or len(matrix_b) != 3 or len(matrix_b[0]) != 3:
-        raise ValueError("This script only supports 3x3 matrices.")
+# Configuration for the serial connection
+PORT = '/dev/ttyUSB0'  # Replace with the appropriate COM port or device path
+BAUDRATE = 9600  # Match the FPGA's baud rate
+TIMEOUT = 1  # Timeout for serial read (in seconds)
 
-    # Send matrix size (fixed at 3 for a 3x3 matrix)
-    serial_port.write(struct.pack("B", rows))
-    
-    # Send Matrix A elements
-    for row in matrix_a:
-        for elem in row:
-            serial_port.write(struct.pack("B", elem))
-            time.sleep(0.2)
-    
-    # Send Matrix B elements
-    for row in matrix_b:
-        for elem in row:
-            serial_port.write(struct.pack("B", elem))
-            time.sleep(0.2)
-
-
-def receive_matrix(serial_port, size):
+def send_byte(ser, byte):
     """
-    Receives a 3x3 matrix from the FPGA over UART.
+    Sends a single byte to the FPGA.
+    """
+    ser.write(bytes([byte]))
+    print(f"Sent: {byte:#02x}")
+
+def listen_to_serial(ser):
+    """
+    Continuously listens for data on the serial port and prints it.
+    Runs in a separate thread.
     """
     while True:
-        data = serial_port.read(1)  # Read 1 byte
-        num = struct.unpack("B", data)[0]
-        print(num)
-    # matrix = []
-    # for i in range(size):
-    #     row = []
-    #     for j in range(size):
-    #         data = serial_port.read(1)  # Read 1 byte
-    #         if data:
-    #             row.append(struct.unpack("B", data)[0])
-    #         else:
-    #             raise TimeoutError("Timeout waiting for data from FPGA.")
-    #     matrix.append(row)
-    # return matrix
+        if ser.in_waiting > 0:
+            byte = ser.read(1)
+            if byte:
+                print(f"Received: {ord(byte):#02x}")
+        time.sleep(0.01)  # Short delay to avoid excessive CPU usage
 
+def send_matrix(ser, matrix):
+    """
+    Sends a matrix to the FPGA row by row.
+    """
+    for row in matrix:
+        for value in row:
+            send_byte(ser, value)
 
 def main():
-    # Configuration for the serial port
-    serial_port_name = "/dev/ttyUSB0"  # Change to your port (e.g., COM3, /dev/ttyUSB0)
-    baud_rate = 9600
-    timeout = 1  # Timeout for UART read in seconds
-
-    # Example 3x3 matrices
+    # Define matrices for testing
     matrix_a = [
         [1, 2, 3],
-        [4, 5, 6],
-        [7, 8, 9]
+        [3, 4, 4],
+        [4, 3, 4]
     ]
     matrix_b = [
-        [9, 8, 7],
-        [6, 5, 4],
-        [3, 2, 1]
+        [5, 6, 7],
+        [7, 8, 8],
+        [8, 7, 8]
     ]
 
-    # Open serial port
-    with serial.Serial(serial_port_name, baud_rate, timeout=timeout) as ser:
-        time.sleep(2)  # Wait for the serial connection to initialize
+    try:
+        # Open the serial connection
+        with serial.Serial(PORT, BAUDRATE, timeout=TIMEOUT) as ser:
+            print(f"Connected to {PORT} at {BAUDRATE} baud.")
+            
+            # Start the listener thread
+            listener_thread = threading.Thread(target=listen_to_serial, args=(ser,), daemon=True)
+            listener_thread.start()
+            
+            # Send matrix size (3 for 3x3)
+            send_byte(ser, 3)
+            
+            # Send Matrix A
+            print("Sending Matrix A:")
+            send_matrix(ser, matrix_a)
+            
+            # Send Matrix B
+            print("Sending Matrix B:")
+            send_matrix(ser, matrix_b)
+            
+            # Keep the main thread running to allow the listener to work
+            print("Main thread running. Press Ctrl+C to exit.")
+            while True:
+                time.sleep(1)
 
-        print("Sending Matrix Size and Data:")
-        send_data(ser, matrix_a, matrix_b)
-
-        print("\nMatrix A:")
-        for row in matrix_a:
-            print(row)
-
-        print("\nMatrix B:")
-        for row in matrix_b:
-            print(row)
-
-        # Assuming the FPGA sends back the result matrix after computation
-        size = 3  # Fixed size for 3x3 matrices
-        print("\nWaiting for the result matrix...")
-        result_matrix = receive_matrix(ser, size)
-
-        print("\nReceived Result Matrix:")
-        for row in result_matrix:
-            print(row)
-
+    except serial.SerialException as e:
+        print(f"Serial error: {e}")
+    except KeyboardInterrupt:
+        print("Exiting program.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 if __name__ == "__main__":
     main()
