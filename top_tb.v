@@ -19,7 +19,7 @@ module top_tb;
     );
 
     // Clock generation
-    always #10 clk = ~clk; // 50 MHz clock (20 ns period)
+    always #5 clk = ~clk; // 100 MHz clock
 
     // UART RX task to simulate receiving data
     task uart_rx_byte;
