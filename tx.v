@@ -35,6 +35,7 @@ module uart_tx (
                     if (start) begin
                         state <= 1;
                         tx_shift <= data;
+								bit_index <= 0;
                         busy <= 1;
                     end
                 end
@@ -43,11 +44,13 @@ module uart_tx (
                     state <= 2;
                 end
                 2: begin // Data bits
+					     
                     tx <= tx_shift[bit_index];
                     bit_index <= bit_index + 1;
-                    if (bit_index == 7) begin
+						  if (bit_index == 7) begin
                         state <= 3;
                     end
+
                 end
                 3: begin // Stop bit
                     tx <= 1; // Stop bit

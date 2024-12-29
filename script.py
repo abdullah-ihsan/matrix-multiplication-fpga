@@ -19,33 +19,39 @@ def send_data(serial_port, matrix_a, matrix_b):
     for row in matrix_a:
         for elem in row:
             serial_port.write(struct.pack("B", elem))
+            time.sleep(0.2)
     
     # Send Matrix B elements
     for row in matrix_b:
         for elem in row:
             serial_port.write(struct.pack("B", elem))
+            time.sleep(0.2)
 
 
 def receive_matrix(serial_port, size):
     """
     Receives a 3x3 matrix from the FPGA over UART.
     """
-    matrix = []
-    for i in range(size):
-        row = []
-        for j in range(size):
-            data = serial_port.read(1)  # Read 1 byte
-            if data:
-                row.append(struct.unpack("B", data)[0])
-            else:
-                raise TimeoutError("Timeout waiting for data from FPGA.")
-        matrix.append(row)
-    return matrix
+    while True:
+        data = serial_port.read(1)  # Read 1 byte
+        num = struct.unpack("B", data)[0]
+        print(num)
+    # matrix = []
+    # for i in range(size):
+    #     row = []
+    #     for j in range(size):
+    #         data = serial_port.read(1)  # Read 1 byte
+    #         if data:
+    #             row.append(struct.unpack("B", data)[0])
+    #         else:
+    #             raise TimeoutError("Timeout waiting for data from FPGA.")
+    #     matrix.append(row)
+    # return matrix
 
 
 def main():
     # Configuration for the serial port
-    serial_port_name = "COM3"  # Change to your port (e.g., COM3, /dev/ttyUSB0)
+    serial_port_name = "/dev/ttyUSB0"  # Change to your port (e.g., COM3, /dev/ttyUSB0)
     baud_rate = 9600
     timeout = 1  # Timeout for UART read in seconds
 
