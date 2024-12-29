@@ -129,7 +129,7 @@ module top (
             end else if (rx_valid && (current_state == RECEIVE_MATRIX_B)) begin
                 b_addr <= b_addr + 1;
             end else if (current_state == SEND_RESULT && !tx_busy) begin
-                result_byte <= mult_result[(result_index*8) +: 8];
+                result_byte <= mult_result[(result_index*16) +: 16];
                 result_index <= result_index + 1;
             end
         end

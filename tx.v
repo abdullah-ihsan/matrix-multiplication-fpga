@@ -1,15 +1,15 @@
 module uart_tx (
     input  wire clk,        // Baud rate clock
     input  wire rst,        // Reset signal
-    input  wire [7:0] data, // Data to transmit
+    input  wire [15:0] data, // Data to transmit
     input  wire start,      // Signal to start transmission
     output reg tx,          // UART TX output
     output reg busy         // High when transmission is ongoing
 );
 
     // Internal signals
-    reg [3:0] bit_index;
-    reg [7:0] tx_shift;
+    reg [4:0] bit_index;
+    reg [15:0] tx_shift;
     reg [1:0] state; // 0: idle, 1: start bit, 2: data bits, 3: stop bit
 
     // Initial block for initialization
@@ -47,7 +47,7 @@ module uart_tx (
 					     
                     tx <= tx_shift[bit_index];
                     bit_index <= bit_index + 1;
-						  if (bit_index == 7) begin
+						  if (bit_index == 15) begin
                         state <= 3;
                     end
 
