@@ -8,7 +8,7 @@ module uart_rx (
 
     // Internal signals
     reg [3:0] bit_index = 0;
-    reg [9:0] rx_shift = 0;
+    reg [7:0] rx_shift = 0;
     reg [1:0] state = 0; // 0: idle, 1: receiving, 2: stop bit
 
     // UART RX logic

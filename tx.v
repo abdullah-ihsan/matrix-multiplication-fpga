@@ -9,7 +9,7 @@ module uart_tx (
 
     // Internal signals
     reg [3:0] bit_index = 0;
-    reg [9:0] tx_shift = 0;
+    reg [7:0] tx_shift = 0;
     reg [1:0] state = 0; // 0: idle, 1: start bit, 2: data bits, 3: stop bit
 
     // UART TX logic
@@ -37,7 +37,7 @@ module uart_tx (
                 2: begin // Data bits
                     tx <= tx_shift[bit_index];
                     bit_index <= bit_index + 1;
-                    if (bit_index == 8) begin
+                    if (bit_index == 7) begin
                         state <= 3;
                     end
                 end

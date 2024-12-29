@@ -19,7 +19,7 @@ module top_tb;
     );
 
     // Clock generation
-    always #10 clk = ~clk; // 50 MHz clock
+    always #10 clk = ~clk; // 100 MHz clock
 
     // UART RX task to simulate receiving data
     task uart_rx_byte;
@@ -61,10 +61,10 @@ module top_tb;
         uart_rx_byte(8'h02); // A[0][1]
         uart_rx_byte(8'h03); // A[1][0]
         uart_rx_byte(8'h04); // A[1][1]
-        uart_rx_byte(8'h03); // A[1][0]
+		  uart_rx_byte(8'h03); // A[1][0]
         uart_rx_byte(8'h04); // A[1][1]
-        uart_rx_byte(8'h04); // A[1][1]
-        uart_rx_byte(8'h03); // A[1][0]
+		  uart_rx_byte(8'h04); // A[1][1]
+		  uart_rx_byte(8'h03); // A[1][0]
         uart_rx_byte(8'h04); // A[1][1]
 
         // Simulate receiving Matrix B (2x2 matrix)
@@ -72,15 +72,17 @@ module top_tb;
         uart_rx_byte(8'h06); // B[0][1]
         uart_rx_byte(8'h07); // B[1][0]
         uart_rx_byte(8'h08); // B[1][1]
-        uart_rx_byte(8'h07); // B[1][0]
+		  uart_rx_byte(8'h07); // B[1][0]
         uart_rx_byte(8'h08); // B[1][1]
-        uart_rx_byte(8'h08); // B[1][1]
-        uart_rx_byte(8'h07); // B[1][0]
+		  uart_rx_byte(8'h08); // B[1][1]
+		  uart_rx_byte(8'h07); // B[1][0]
         uart_rx_byte(8'h08); // B[1][1]
 
-        // Add more test cases as needed
+        // Wait for multiplication and transmission to complete
+        #20000000; // Wait for enough time to complete transmission
 
-        #1000;
-        $finish;
+        // End simulation
+        $stop;
     end
+
 endmodule
