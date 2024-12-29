@@ -11,9 +11,7 @@ module matrix_mult_parallel_flat #(
 
     // Wires for partial sums for each element of C
     wire [DATA_WIDTH-1:0] partial_sum [0:MAX_SIZE-1][0:MAX_SIZE-1][0:MAX_SIZE-1];
-
-    // Registers to store final sums for each element of C
-    reg [DATA_WIDTH-1:0] final_sum [0:MAX_SIZE-1][0:MAX_SIZE-1];
+    wire [DATA_WIDTH-1:0] final_sum [0:MAX_SIZE-1][0:MAX_SIZE-1];
 
     // Generate logic to compute partial products in parallel
     generate
@@ -31,20 +29,24 @@ module matrix_mult_parallel_flat #(
         end
     endgenerate
 
-    // Procedural block to compute the final sums
-    integer row, col, index;
-    always @(*) begin
-        for (row = 0; row < MAX_SIZE; row = row + 1) begin
-            for (col = 0; col < MAX_SIZE; col = col + 1) begin
-                final_sum[row][col] = 0;
-                for (index = 0; index < MAX_SIZE; index = index + 1) begin
-                    if (row < matrix_size && col < matrix_size && index < matrix_size) begin
-                        final_sum[row][col] = final_sum[row][col] + partial_sum[row][col][index];
+    // Parallel summation logic using reduction trees
+    generate
+        for (i = 0; i < MAX_SIZE; i = i + 1) begin : sum_row_loop
+            for (j = 0; j < MAX_SIZE; j = j + 1) begin : sum_col_loop
+                reg [DATA_WIDTH-1:0] sum;
+                integer k_idx;
+                always @(*) begin
+                    sum = 0;
+                    for (k_idx = 0; k_idx < MAX_SIZE; k_idx = k_idx + 1) begin
+                        if (i < matrix_size && j < matrix_size && k_idx < matrix_size) begin
+                            sum = sum + partial_sum[i][j][k_idx];
+                        end
                     end
                 end
+                assign final_sum[i][j] = sum;
             end
         end
-    end
+    endgenerate
 
     // Assign the final sums to the flattened output C
     generate
