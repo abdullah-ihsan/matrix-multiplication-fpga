@@ -8,3 +8,4 @@
 # Allow this .gitignore file itself
 !.gitignore
 !*.ucf
+!*.py
