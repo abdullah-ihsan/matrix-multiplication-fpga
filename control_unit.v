@@ -70,7 +70,7 @@ module control_unit (
                 end
             end
             SEND_RESULT: begin
-                if (element_count == 40 && !tx_busy) begin // 18 bytes for 9 elements * 2 bytes each
+                if ((matrix_size * matrix_size * 2 - 1) && !tx_busy) begin // 18 bytes for 9 elements * 2 bytes each
                     next_state = IDLE;
                 end
             end

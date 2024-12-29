@@ -53,30 +53,21 @@ module top_tb;
         #20;
         //rst = 0;
 
-        // Simulate receiving matrix size (2x2 matrix)
-        uart_rx_byte(8'h03);
+        // Simulate receiving matrix size (10x10 matrix)
+        uart_rx_byte(8'h0A); // Size for 10x10 matrix (0x0A)
 
-        // Simulate receiving Matrix A (2x2 matrix)
-        uart_rx_byte(8'h01); // A[0][0]
-        uart_rx_byte(8'h02); // A[0][1]
-        uart_rx_byte(8'h03); // A[1][0]
-        uart_rx_byte(8'h04); // A[1][1]
-        uart_rx_byte(8'h05); // A[1][0]
-        uart_rx_byte(8'h06); // A[1][1]
-        uart_rx_byte(8'h07); // A[1][1]
-        uart_rx_byte(8'h08); // A[1][0]
-        uart_rx_byte(8'h09); // A[1][1]
+        // Simulate receiving Matrix A (10x10 matrix)
+        // We simulate the first 100 elements as a simple example
+        integer i;
+        for (i = 0; i < 100; i = i + 1) begin
+            uart_rx_byte(i + 8'h01); // A[i] = i + 1
+        end
 
-        // Simulate receiving Matrix B (2x2 matrix)
-        uart_rx_byte(8'h09); // B[0][0]
-        uart_rx_byte(8'h08); // B[0][1]
-        uart_rx_byte(8'h07); // B[1][0]
-        uart_rx_byte(8'h06); // B[1][1]
-        uart_rx_byte(8'h05); // B[1][0]
-        uart_rx_byte(8'h04); // B[1][1]
-        uart_rx_byte(8'h03); // B[1][1]
-        uart_rx_byte(8'h02); // B[1][0]
-        uart_rx_byte(8'h01); // B[1][1]
+        // Simulate receiving Matrix B (10x10 matrix)
+        // We simulate the first 100 elements as a simple example
+        for (i = 0; i < 100; i = i + 1) begin
+            uart_rx_byte(8'hFF - i); // B[i] = 0xFF - i
+        end
 
         // Wait for multiplication and transmission to complete
         #20000000; // Wait for enough time to complete transmission

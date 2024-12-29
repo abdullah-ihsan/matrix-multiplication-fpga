@@ -97,14 +97,18 @@ module top (
         .read_enable_b(read_enable_b)
     );
 
-    // Instantiate Calculator module
-    Calculator matrix_mult_inst (
+    // Instantiate matrix_mult_parallel_flat module
+    matrix_mult_parallel_flat #(
+        .MAX_SIZE(10),
+        .DATA_WIDTH(32)
+    ) matrix_mult_inst (
         .clk(bclk),
-        .enable_multiplication(mult_start),
+        .enable(mult_start),
+        .matrix_size(matrix_size),
         .A(a_data),
         .B(b_data),
-        .result(mult_result),
-        .mult_done(mult_done)
+        .C(mult_result),
+        .done(mult_done)
     );
 
     // Initial block for initialization
