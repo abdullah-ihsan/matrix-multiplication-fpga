@@ -7,12 +7,20 @@ module uart_rx (
 );
 
     // Internal signals
-    reg [3:0] bit_index = 0;
-    reg [7:0] rx_shift = 0;
-    reg [1:0] state = 0; // 0: idle, 1: receiving, 2: stop bit
+    reg [3:0] bit_index;
+    reg [7:0] rx_shift;
+    reg [1:0] state; // 0: idle, 1: receiving, 2: stop bit
+
+    // Initial block for initialization
+    initial begin
+        bit_index = 0;
+        rx_shift = 0;
+        valid = 0;
+        state = 0;
+    end
 
     // UART RX logic
-    always @(posedge clk or posedge rst) begin
+    always @(posedge clk) begin
         if (rst) begin
             bit_index <= 0;
             rx_shift <= 0;

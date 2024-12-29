@@ -8,12 +8,21 @@ module uart_tx (
 );
 
     // Internal signals
-    reg [3:0] bit_index = 0;
-    reg [7:0] tx_shift = 0;
-    reg [1:0] state = 0; // 0: idle, 1: start bit, 2: data bits, 3: stop bit
+    reg [3:0] bit_index;
+    reg [7:0] tx_shift;
+    reg [1:0] state; // 0: idle, 1: start bit, 2: data bits, 3: stop bit
+
+    // Initial block for initialization
+    initial begin
+        bit_index = 0;
+        tx_shift = 0;
+        tx = 1; // Idle state of UART TX
+        busy = 0;
+        state = 0;
+    end
 
     // UART TX logic
-    always @(posedge clk or posedge rst) begin
+    always @(posedge clk) begin
         if (rst) begin
             bit_index <= 0;
             tx_shift <= 0;
@@ -24,10 +33,9 @@ module uart_tx (
             case (state)
                 0: begin // Idle state
                     if (start) begin
-                        tx_shift <= data; // Load data with start and stop bits
-                        bit_index <= 0;
-                        busy <= 1;
                         state <= 1;
+                        tx_shift <= data;
+                        busy <= 1;
                     end
                 end
                 1: begin // Start bit
@@ -43,8 +51,8 @@ module uart_tx (
                 end
                 3: begin // Stop bit
                     tx <= 1; // Stop bit
-                    busy <= 0;
                     state <= 0;
+                    busy <= 0;
                 end
             endcase
         end

@@ -25,8 +25,15 @@ module control_unit (
     reg [2:0] next_state;
     reg [15:0] element_count;
 
+    // Initial block for initialization
+    initial begin
+        current_state = IDLE;
+        matrix_size = 0;
+        element_count = 0;
+    end
+
     // State transition logic
-    always @(posedge clk or posedge rst) begin
+    always @(posedge clk) begin
         if (rst) begin
             current_state <= IDLE;
         end else begin
@@ -104,7 +111,7 @@ module control_unit (
     end
 
     // Consolidated logic for matrix size and element count
-    always @(posedge clk or posedge rst) begin
+    always @(posedge clk) begin
         if (rst) begin
             matrix_size <= 0;
             element_count <= 0;
