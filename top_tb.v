@@ -19,7 +19,7 @@ module top_tb;
     );
 
     // Clock generation
-    always #10 clk = ~clk; // 100 MHz clock
+    always #5 clk = ~clk; // 100 MHz clock
 
     // UART RX task to simulate receiving data
     task uart_rx_byte;
@@ -45,6 +45,7 @@ module top_tb;
     initial begin
         // Initialize signals
         clk = 0;
+        
         rst = 1;
         rx = 1; // Idle state of UART RX
         b_sel = 2'b01; // Set baud rate to 9600
