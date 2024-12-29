@@ -12,18 +12,18 @@ def send_byte(ser, byte):
     Sends a single byte to the FPGA.
     """
     ser.write(bytes([byte]))
-    print(f"Sent: {byte:#02x}")
+    print(f"Sent: {byte}")
 
 def listen_to_serial(ser):
     """
-    Continuously listens for data on the serial port and prints it.
+    Continuously listens for data on the serial port and prints it in decimal.
     Runs in a separate thread.
     """
     while True:
         if ser.in_waiting > 0:
             byte = ser.read(1)
             if byte:
-                print(f"Received: {ord(byte):#02x}")
+                print(f"Received: {ord(byte)}")  # Convert byte to decimal
         time.sleep(0.01)  # Short delay to avoid excessive CPU usage
 
 def send_matrix(ser, matrix):
@@ -38,14 +38,15 @@ def main():
     # Define matrices for testing
     matrix_a = [
         [1, 2, 3],
-        [3, 4, 4],
-        [4, 3, 4]
+        [4, 5, 6],
+        [7, 8, 9]
     ]
     matrix_b = [
-        [5, 6, 7],
-        [7, 8, 8],
-        [8, 7, 8]
+        [9, 8, 7],
+        [6, 5, 4],
+        [3, 2, 1]
     ]
+
 
     try:
         # Open the serial connection
@@ -56,7 +57,7 @@ def main():
             listener_thread = threading.Thread(target=listen_to_serial, args=(ser,), daemon=True)
             listener_thread.start()
             
-            # Send matrix size (3 for 3x3)
+             # Send matrix size (3 for 3x3)
             send_byte(ser, 3)
             
             # Send Matrix A

@@ -11,7 +11,7 @@ module top (
     wire rx_valid;
     wire tx_busy;
     wire [71:0] a_data, b_data; // 9 elements * 8 bits each
-    reg [3:0] a_addr, b_addr;
+    reg [5:0] a_addr, b_addr;
     wire [143:0] mult_result;
     wire rx_enable, tx_start, mult_start;
     wire [2:0] current_state;
@@ -23,7 +23,7 @@ module top (
     // Internal signals
     wire bclk_8, bclk;
     reg [7:0] result_byte;
-    reg [3:0] result_index;
+    reg [7:0] result_index;
 
     // State encoding
     localparam IDLE = 3'b000,
