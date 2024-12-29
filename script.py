@@ -21,7 +21,7 @@ def listen_to_serial(ser):
     """
     while True:
         if ser.in_waiting > 0:
-            byte = ser.read(1)
+            byte = ser.read(2)
             if byte:
                 print(f"Received: {ord(byte)}")  # Convert byte to decimal
         time.sleep(0.01)  # Short delay to avoid excessive CPU usage

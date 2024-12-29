@@ -22,7 +22,7 @@ module top (
 
     // Internal signals
     wire bclk_8, bclk;
-    reg [7:0] result_byte;
+    reg [15:0] result_byte;
     reg [7:0] result_index;
 
     // State encoding
