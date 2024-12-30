@@ -10,20 +10,20 @@ module top (
     wire [7:0] rx_data;
     wire rx_valid;
     wire tx_busy;
-    wire [71:0] a_data, b_data; // 9 elements * 8 bits each
-    reg [5:0] a_addr, b_addr;
-    wire [143:0] mult_result;
+    wire [799:0] a_data, b_data; // 100 elements * 8 bits each for 10x10 matrix
+    reg [6:0] a_addr, b_addr;    // Updated address width to handle 100 locations
+    wire [1599:0] mult_result;   // Result for 10x10 matrix
     wire rx_enable, tx_start, mult_start;
     wire [2:0] current_state;
     wire [3:0] matrix_size;
-    wire [3:0] read_addr_a, read_addr_b;
+    wire [6:0] read_addr_a, read_addr_b;
     wire read_enable_a, read_enable_b;
     wire mult_done;
 
     // Internal signals
     wire bclk_8, bclk;
     reg [7:0] result_byte;
-    reg [7:0] result_index;
+    reg [11:0] result_index;    // Increased size for 10x10 matrix (100 elements)
 
     // State encoding
     localparam IDLE = 3'b000,
@@ -54,7 +54,7 @@ module top (
     uart_tx uart_transmitter (
         .clk(bclk),
         .rst(rst),
-        .data(result_byte), // For now, just loop back the received data
+        .data(result_byte),
         .start(tx_start),
         .tx(tx),
         .busy(tx_busy)
