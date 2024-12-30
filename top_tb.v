@@ -67,7 +67,7 @@ module top_tb;
         end
 
         // Wait for multiplication and transmission to complete
-        #20000000; // Wait for enough time to complete transmission
+        #2000000000; // Wait for enough time to complete transmission
 
         // End simulation
         $stop;

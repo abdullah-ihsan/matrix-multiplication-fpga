@@ -98,7 +98,7 @@ module top (
     );
 
     // Instantiate Calculator module
-    Calculator matrix_mult_inst (
+    Calculator10 matrix_mult_inst (
         .clk(bclk),
         .enable_multiplication(mult_start),
         .A(a_data),
