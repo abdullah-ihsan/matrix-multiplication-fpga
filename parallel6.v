@@ -12,6 +12,10 @@ module Calculator10(
     reg [15:0] Res1 [0:9][0:9];
 
     wire [15:0] partial_products [0:99];
+	 
+	 initial begin 
+		result = 1600'd0; 
+	 end
 
     // Assign input matrices to 2D arrays for processing
     integer i, j;
@@ -44,20 +48,18 @@ module Calculator10(
         if (enable_multiplication) begin
             for (i = 0; i < 10; i = i + 1) begin
                 for (j = 0; j < 10; j = j + 1) begin
-                    Res1[i][j] <= partial_products[i*10 + j];
+                    Res1[i][j] = partial_products[i*10 + j];
                 end
             end
 
             // Assign result to single array
             for (i = 0; i < 10; i = i + 1) begin
                 for (j = 0; j < 10; j = j + 1) begin
-                    result[(i*10 + j)*16 +: 16] <= Res1[i][j];
+                    result[(i*10 + j)*16 +: 16] = Res1[i][j];
                 end
             end
 
             mult_done <= 1'b1;
-        end else begin
-            mult_done <= 1'b0;
-        end
+				end
     end
 endmodule
