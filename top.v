@@ -10,9 +10,9 @@ module top (
     wire [7:0] rx_data;
     wire rx_valid;
     wire tx_busy;
-    wire [71:0] a_data, b_data; // 9 elements * 8 bits each
+    wire [799:0] a_data, b_data; // 9 elements * 8 bits each
     reg [5:0] a_addr, b_addr;
-    wire [143:0] mult_result;
+    wire [799:0] mult_result;
     wire rx_enable, tx_start, mult_start;
     wire [2:0] current_state;
     wire [3:0] matrix_size;
@@ -100,7 +100,7 @@ module top (
     // Instantiate matrix_mult_parallel_flat module
     matrix_mult_parallel_flat #(
         .MAX_SIZE(10),
-        .DATA_WIDTH(32)
+        .DATA_WIDTH(8)
     ) matrix_mult_inst (
         .clk(bclk),
         .enable(mult_start),

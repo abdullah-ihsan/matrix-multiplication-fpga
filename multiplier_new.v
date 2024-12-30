@@ -54,7 +54,8 @@ module matrix_mult_parallel_flat #(
             end
         end
     endgenerate
-
+		integer i_idx;
+		integer j_idx;
     // Sequential logic for enable and done signals
     always @(posedge clk) begin
         if (enable) begin
@@ -64,10 +65,10 @@ module matrix_mult_parallel_flat #(
             B_reg <= B;
             
             // Assign results to output matrix
-            for (integer i = 0; i < MAX_SIZE; i = i + 1) begin
-                for (integer j = 0; j < MAX_SIZE; j = j + 1) begin
-                    C[((i * MAX_SIZE + j) * DATA_WIDTH) +: DATA_WIDTH] <=
-                        (i < matrix_size && j < matrix_size) ? final_sum[i][j] : 0;
+            for (i_idx = 0; i_idx< MAX_SIZE; i_idx=i_idx + 1) begin
+                for (j_idx = 0;j_idx < MAX_SIZE; j_idx= j_idx+ 1) begin
+                    C[((i_idx * MAX_SIZE +j_idx) * DATA_WIDTH) +: DATA_WIDTH] <=
+                        (i_idx < matrix_size && j_idx< matrix_size) ? final_sum[i_idx][j_idx] : 0;
                 end
             end
             

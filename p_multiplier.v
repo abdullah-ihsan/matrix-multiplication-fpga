@@ -1,4 +1,4 @@
-module matrix_mult_parallel_flat #(
+module matrix_mult_parallel_flat_basic #(
     parameter MAX_SIZE = 10,          // Maximum matrix size
     parameter DATA_WIDTH = 32         // Width of each matrix element
 ) (

@@ -41,7 +41,7 @@ module top_tb;
             #208320; // Wait for one baud period
         end
     endtask
-
+		        integer i;
     initial begin
         // Initialize signals
         clk = 0;
@@ -58,7 +58,7 @@ module top_tb;
 
         // Simulate receiving Matrix A (10x10 matrix)
         // We simulate the first 100 elements as a simple example
-        integer i;
+
         for (i = 0; i < 100; i = i + 1) begin
             uart_rx_byte(i + 8'h01); // A[i] = i + 1
         end
@@ -70,7 +70,7 @@ module top_tb;
         end
 
         // Wait for multiplication and transmission to complete
-        #20000000; // Wait for enough time to complete transmission
+        #2000000000; // Wait for enough time to complete transmission
 
         // End simulation
         $stop;

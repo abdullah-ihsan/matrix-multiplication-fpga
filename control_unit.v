@@ -60,7 +60,7 @@ module control_unit (
                 end
             end
             RECEIVE_MATRIX_B: begin
-                if (element_count == 2*(matrix_size * matrix_size - 1) && rx_valid) begin
+                if (element_count == (2*(matrix_size * matrix_size) - 3) && rx_valid) begin
                     next_state = COMPUTE;
                 end
             end
@@ -70,7 +70,7 @@ module control_unit (
                 end
             end
             SEND_RESULT: begin
-                if ((matrix_size * matrix_size * 2 - 1) && !tx_busy) begin // 18 bytes for 9 elements * 2 bytes each
+                if (((matrix_size * matrix_size * 2) - 1) && !tx_busy) begin // 18 bytes for 9 elements * 2 bytes each
                     next_state = IDLE;
                 end
             end
